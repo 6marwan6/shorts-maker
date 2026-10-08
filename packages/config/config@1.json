@@ -1,0 +1,622 @@
+{
+  "config_version": "config@1",
+  "constants": {
+    "MAX_SOURCE_DURATION_S": 5400,
+    "MAX_SOURCE_SIZE_BYTES": 4000000000,
+    "LANGUAGE_SAMPLE_S": 60,
+    "LANGUAGE_ID_MODEL_ID": "fasttext/lid.176.ftz",
+    "LANGUAGE_MIN_WORDS": 20,
+    "LANGUAGE_CONF_MIN": 0.9,
+    "PROFILE_BIN_S": 10,
+    "CP_WINDOW_BINS": 6,
+    "CP_SIGMA": 1.5,
+    "CP_MIN_DIST": 1.0,
+    "CP_MIN_SEGMENT_S": 60,
+    "CP_MIN_VIDEO_S": 180,
+    "NORM_WPM": 140,
+    "NORM_CUT_RATE": 12,
+    "NORM_MOTION": 0.15,
+    "NORM_PEAK_RATE": 3,
+    "S_sem": 0.3,
+    "S_vis": 0.35,
+    "S_evt": 0.35,
+    "WEIGHT_FLOOR": 0.1,
+    "DEPTH_ABS_MIN": {
+      "semantic": 0.08,
+      "topic": 0.06
+    },
+    "START_MIN": 0.35,
+    "END_MIN": 0.35,
+    "SEEDS_PER_10MIN": 10,
+    "LOOKBACK_S": 20,
+    "PREFERRED_EVENT_LEADIN_S": 6,
+    "EVENT_MAX_LEADIN_S": 15,
+    "LEADOUT_MIN_S": 4,
+    "MAX_EVENT_S": 45,
+    "TOPIC_STOP": 0.6,
+    "EVENT_SAFE_PAUSE_MIN_S": 0.5,
+    "EVENT_SAFE_SILENCE_MIN_S": 1.5,
+    "EVENT_ONSET_MARGIN_S": 1.0,
+    "EVENT_MIN_FINAL_S": 6,
+    "EVENT_EDIT_MAX_RATIO": 1.5,
+    "SETTLE_TAIL_MIN_S": 1.5,
+    "SETTLE_SNAP_MAX_S": 3.0,
+    "MIN_REGION_SPEECH": 10,
+    "MIN_REGION_EVENT": 6,
+    "MAX_COMPRESSION_RATIO": 4.0,
+    "STUDY_MAX_RATIO": 8.0,
+    "MAX_REGION_S": 240,
+    "SINGLE_IDEA_EXTENSION": 1.25,
+    "ABSOLUTE_REGION_CEILING": 360,
+    "MAX_SINGLE_IDEA_REGION_S": 300,
+    "R_DISC": 1.0,
+    "R_T1": 0.4,
+    "R_EDIT": 0.25,
+    "R_DISC_FLOOR": 6,
+    "R_DISC_CAP": 90,
+    "R_T1_FLOOR": 4,
+    "R_T1_CAP": 40,
+    "R_EDIT_FLOOR": 3,
+    "R_EDIT_CAP": 25,
+    "N_SHOW": 10,
+    "MIN_FINAL_DURATION_S_DEFAULT": 8,
+    "MAX_PLANS_PER_REGION": 3,
+    "MAX_INTERVALS": 6,
+    "MIN_KEEP_INTERVAL_S": {
+      "speech": 3,
+      "event": 2
+    },
+    "DP_POOL": 20,
+    "DP_BUCKET_S": 0.1,
+    "LONG_UNIT_S": 15,
+    "SPLIT_PAUSE_MS": 500,
+    "LAMBDA_CUT": 0.15,
+    "DENSITY_NORM": 2.5,
+    "PAYOFF_DECAY_UNITS": 8,
+    "OPENING_CANDIDATES": 3,
+    "CTX_MAX": 0.5,
+    "OPENING_OBJ_TOL": 0.1,
+    "AGGR_FACTOR": 0.7,
+    "PLAN_DEDUP_DURATION_REL": 0.1,
+    "MINIMAL_CLEANUP_RATIO_CAP": 1.1,
+    "PAUSE_SHORTEN_THRESHOLD_S": 0.7,
+    "PAUSE_TARGET_S": 0.35,
+    "MICRO_EDIT_MAX_DENSITY": {
+      "count": 1,
+      "per_s": 2
+    },
+    "FILLER_WORD_REMOVAL_CONFIDENCE": 0.8,
+    "PASS_MIN_SCORE": 4,
+    "PASS_MEAN_STANDARD": 4.2,
+    "PASS_MEAN_STRICT": 4.5,
+    "HARD_SCORE_MAX": 2,
+    "STANDARD_RATIO_MAX": 2.0,
+    "STRICT_MINOR_ISSUES_MAX": 1,
+    "VERIFY_ALL_PLANS": true,
+    "EARLY_STOP_ACCEPTED_PLANS": "disabled",
+    "EVALUATION_MODE": false,
+    "PLAN_VERIFY_ORDER": [
+      "minimal",
+      "balanced",
+      "aggressive"
+    ],
+    "JUDGE_MIN_WORDS": 25,
+    "CONTEXT_BEFORE_S": 30,
+    "JUDGE_MAX_EVIDENCE_WORDS": 20,
+    "CUT_GAP_MIN_MS": 20,
+    "CROSSFADE_MS": 30,
+    "MIN_XFADE_MS": 10,
+    "LOUDNESS_STEP_MAX_DB": 12,
+    "LOUDNESS_XFADE_MS": 100,
+    "EXT_XFADE_MIN_MS": 60,
+    "BRIDGE_MARGIN": 0.05,
+    "REPAIR_DUPLICATE_OVERLAP": 0.9,
+    "REPAIR_RESTORE_DEPTH": 1,
+    "MAX_REPAIR_ITERATIONS_PER_PLAN": 1,
+    "MAX_JUDGE_CALLS_PER_PLAN": 2,
+    "MAX_JUDGE_CALLS_PER_REGION": 6,
+    "STUDY_MAX_JUDGE_CALLS_PER_REGION": 10,
+    "LLM_CALL_TIMEOUT_S": 30,
+    "LLM_MAX_TRANSPORT_RETRIES": 2,
+    "STAGE_MAX_ATTEMPTS": 3,
+    "ROBUST_Z_ZERO_MAD": 6.0,
+    "RMS_MAD_FLOOR": 0.01,
+    "MOTION_MAD_FLOOR": 0.01,
+    "DEPTH_MAD_FLOOR": 0.01,
+    "REL_MAD_FLOOR": 0.05,
+    "LOCAL_NONSPEECH_WINDOW_S": 60,
+    "LOCAL_NONSPEECH_PERCENTILE": 20,
+    "SENTENCE_GAP_MS": 500,
+    "SENTENCE_MAX_S": 15,
+    "HARD_SPLIT_MIN_GAP_MS": 20,
+    "TEXTTILING_SEMANTIC_W": 5,
+    "TEXTTILING_TOPIC_W": 25,
+    "EMBEDDING_MODEL_ID": "BAAI/bge-small-en-v1.5",
+    "SHOT_CONTENT_THRESHOLD": 27.0,
+    "SHOT_MIN_SCENE_FRAMES": 15,
+    "OPENING_WINDOW_S": 3.0,
+    "OPENING_MIN_WORDS": 15,
+    "OPENING_MAX_WORDS": 40,
+    "HOOK_LLM_MIN_WORDS": 8,
+    "HOOK_MAX_TYPES": 2,
+    "HOOK_TYPE_CONF_MIN": 0.6,
+    "MIN_TYPE_POSITIVES": 5,
+    "STYLE_CONF_MIN": 0.6,
+    "STYLE_MAX_INPUT_TOKENS": 4000,
+    "STYLE_HEAD_TOKENS": 2000,
+    "STYLE_TAIL_TOKENS": 1900,
+    "STYLE_TOKENIZER_VERSION": 1,
+    "STYLE_CACHE_VERSION": 1,
+    "HOOK_CANONICAL_INPUT_VERSION": 1,
+    "TIMELINE_MAPPING_VERSION": 1,
+    "HOOK_SEMANTIC_VALIDATOR_VERSION": 1,
+    "AUDIO_SIGNAL_Z": 2.0,
+    "MOTION_SIGNAL_Z": 2.0,
+    "FACE_SAMPLE_FPS": 5,
+    "MOTION_SAMPLE_FPS": 2,
+    "SCENE_ANALYSIS_FPS": 2,
+    "SCREEN_ANALYSIS_FPS": 1,
+    "BOOTSTRAP_B": 2000,
+    "VIS_FACE_MIXED_MIN": 0.2,
+    "VIS_SCREEN_MIXED_MIN": 0.2,
+    "VIS_SCREEN_MIN": 0.5,
+    "VIS_FACE_MIN": 0.2,
+    "T1_MIN_SCORE": 0.25,
+    "T1_OVERLAP_IOU": 0.5,
+    "T1_DURATION_FIT_LEVELS": [
+      1.0,
+      0.7,
+      0.4,
+      0.0
+    ],
+    "BACKFILL_BATCH": 3,
+    "BACKFILL_MAX_ROUNDS": 2,
+    "T1_MIN_VIDEOS": 8,
+    "T1_WEIGHTS": {
+      "hook": 0.15,
+      "boundary": 0.2,
+      "completeness": 0.15,
+      "standalone": 0.15,
+      "density": 0.1,
+      "energy": 0.1,
+      "duration_fit": 0.1,
+      "live_air": 0.05
+    },
+    "REFRAME_GRID_PX": 16,
+    "REFRAME_MAX_CENTER_JUMP_PX": 120,
+    "REFRAME_MEDIAN_WINDOW_FRAMES": 5,
+    "REFRAME_CONF_MIN": 0.6,
+    "CAPTION_MAX_CHARS_PER_LINE": 32,
+    "CAPTION_SAFE_ZONE": {
+      "x_min": 0.05,
+      "x_max": 0.95,
+      "y_min": 0.78,
+      "y_max": 0.93
+    },
+    "LOUDNESS_TARGET_LUFS": -14,
+    "TRUE_PEAK_MAX_DBTP": -1.0,
+    "CAPTION_FONT_FAMILY": "Noto Sans",
+    "CAPTION_FONT_SIZE_PX": 64,
+    "CAPTION_TEXT_COLOR": "#FFFFFF",
+    "CAPTION_OUTLINE_COLOR": "#000000",
+    "CAPTION_OUTLINE_WIDTH_PX": 4,
+    "CAPTION_ALIGNMENT": "center",
+    "BLACK_FRAME_SAMPLE_FPS": 2,
+    "BLACK_FRAME_LUMA_THRESHOLD": 0.06274509803921569,
+    "BLACK_FRAME_MAX_FRACTION": 0.02,
+    "BLUR_BACKGROUND_SIGMA": 24,
+    "T4_BASE_PAIRS": 400,
+    "T4_SEALED_PAIRS": 160,
+    "T4_DEV_MIN_VIDEOS": 32,
+    "T4_SEALED_MIN_VIDEOS": 12,
+    "T4_MAX_VIDEO_SHARE": 0.1,
+    "T4_MIN_CROSS_REGION_SHARE": 0.5,
+    "T4_CROSS_CLASS_PAIRS": 40,
+    "T4_CROSS_CLASS_MIN_VIDEOS": 8,
+    "T4_SAMPLING_SEED": 20260920,
+    "STUDY_MIN_REGIONS": 15,
+    "STUDY_MIN_VIDEOS": 8,
+    "STUDY_MAX_VIDEO_SHARE": 0.25,
+    "STUDY_TARGET_RATIOS": [
+      4.5,
+      5.0,
+      6.0,
+      7.0,
+      8.0
+    ],
+    "STUDY_TARGET_TOL": 0.05,
+    "STUDY_TARGET_SLACK_S": 0.5,
+    "STUDY_MAX_PLANS_PER_REGION": 5,
+    "T2_MIN_COVERAGE": 0.5,
+    "WPM_TARGET": 150,
+    "WPM_TOL": 75,
+    "PAUSE_RATIO_REF": 0.25,
+    "REL_MIN_POP": 8,
+    "MMR_LAMBDA": 0.7,
+    "DISPLAY_MAX_OVERLAP": 0.3,
+    "T2_WEIGHTS": {
+      "coherence": 0.2,
+      "hook": 0.2,
+      "completeness": 0.1,
+      "density": 0.1,
+      "pacing": 0.1,
+      "energy": 0.1,
+      "visual": 0.05,
+      "edit": 0.1,
+      "reframe": 0.05
+    },
+    "H5_MARGIN": 0.03,
+    "HOOK_GROUPS_ENABLED": [],
+    "CROSS_CLASS_MERGE_ENABLED": false,
+    "TREND_FEATURES_ENABLED": false,
+    "STUDY_MODE": false,
+    "ANALYSIS_SAMPLE_RATE_HZ": 16000,
+    "RMS_FRAME_LENGTH_SAMPLES": 400,
+    "RMS_HOP_LENGTH_SAMPLES": 160,
+    "RMS_1S_FRAME_SAMPLES": 16000,
+    "RMS_1S_HOP_SAMPLES": 16000,
+    "ROLLING_BASELINE_WINDOW_S": 60,
+    "PEAK_ROBUST_Z_MIN": 2.0,
+    "PEAK_MIN_SPACING_S": 3.0,
+    "PAUSE_MIN_MS": 600,
+    "MOTION_EVENT_PROBE_FPS": 10,
+    "MOTION_SUSTAIN_S": 0.3,
+    "MOTION_MAX_DIM_PX": 512,
+    "SCREEN_MAX_DIM_PX": 1280,
+    "FARNEBACK": {
+      "pyr_scale": 0.5,
+      "levels": 3,
+      "winsize": 15,
+      "iterations": 3,
+      "poly_n": 5,
+      "poly_sigma": 1.2,
+      "flags": 0
+    },
+    "FACE_MODEL_SELECTION": 1,
+    "FACE_MIN_DETECTION_CONFIDENCE": 0.5
+  },
+  "v5_supplement": {
+    "_note": "v5.0 named constants absent from implementation plan 2.1; values copied from the cited v5.0 sections. Reconciled against a full extraction pass over v5.0 (2026-09-23) -- see README constant-reconciliation report.",
+    "COH_A_WINDOW": 5,
+    "COH_B_WINDOW": 3,
+    "COH_A_MIN": 3,
+    "COH_B_MIN": 2,
+    "MIN_REGION_WORDS": 30,
+    "SPEECH_RATIO_MIN": 0.4,
+    "END_CONNECTIVES": [
+      "and",
+      "but",
+      "so",
+      "because",
+      "or",
+      "then",
+      "which",
+      "that",
+      "if",
+      "when"
+    ],
+    "CTX_DEP_WEIGHTS": {
+      "R": 0.6,
+      "C": 0.6,
+      "P": 0.4
+    },
+    "RS_WEIGHTS": {
+      "start_score": 0.35,
+      "end_score": 0.35,
+      "seed_strength": 0.15,
+      "pattern_completeness": 0.15
+    }
+  },
+  "calibrated_no_initial_value": {
+    "_note": "Constants v5.0 explicitly states have NO initial numeric value -- only a calibration procedure. Reading these via Config.__getitem__ raises, rather than silently returning None as if it were a normal null default, so code cannot accidentally treat 'not yet calibrated' as 'zero' or 'disabled'. Do not fill in a numeric value here from a nearby constant or an older plan -- see README CONSTANT-0001.",
+    "CONT_MIN": {
+      "source": "v5.0 2.36.6",
+      "procedure": "25th percentile of the cohesion function (2.36.6) measured across sentence transitions inside labeled A/B regions on the dev set; recalibrate whenever the embedding model changes.",
+      "status": "BLOCKED -- Task 1/2 labels do not exist yet (needs Phase 15 evaluation dataset)"
+    }
+  },
+  "runtime_model_slots": {
+    "_note": "v5.0 names JUDGE_MODEL (2.36.9.3) and STYLE_MODEL (2.37.5.1) as abstract 'config value, re-verified at implementation time' slots, without fixing a value itself. Implementation plan 1.11/14.1 separately fixes concrete runtime model IDs by component, in a table, not under these constant names. Reconciled here: JUDGE_MODEL and STYLE_MODEL trace to a v5.0-named slot; HOOK_MODEL does not (hook_analysis_v1's model_id is unnamed in v5.0 -- this key exists only for implementation convenience, sourced from impl plan 1.11 alone, flagged separately from the two v5.0-grounded slots).",
+    "JUDGE_MODEL": {
+      "value": "deepseek-v4-pro",
+      "source": "impl plan 1.11 table (semantic verifier), reconciled against v5.0 2.36.9.3's named slot"
+    },
+    "STYLE_MODEL": {
+      "value": "kimi-k3",
+      "source": "impl plan 1.11 table (content_style_v1), reconciled against v5.0 2.37.5.1's named slot"
+    },
+    "HOOK_MODEL": {
+      "value": "kimi-k3",
+      "source": "impl plan 1.11 table (hook_analysis_v1) only -- v5.0 does not name this slot"
+    }
+  },
+  "export_profiles": {
+    "youtube_shorts": {
+      "enabled": true,
+      "min_s": 8,
+      "primary_range_s": [
+        20,
+        60
+      ],
+      "extended_range_s": [
+        60,
+        120
+      ],
+      "max_s": 180
+    },
+    "tiktok_default": {
+      "enabled": false,
+      "min_s": 8,
+      "primary_range_s": [
+        20,
+        60
+      ],
+      "extended_range_s": [
+        60,
+        120
+      ],
+      "max_s": null
+    },
+    "instagram_reels_default": {
+      "enabled": false,
+      "min_s": 8,
+      "primary_range_s": [
+        15,
+        60
+      ],
+      "extended_range_s": [
+        60,
+        90
+      ],
+      "max_s": null
+    }
+  },
+  "runtime_contracts": {
+    "_note": "Versioned runtime contracts that MUST be frozen by an explicit spec amendment before the corresponding model backend may run (owner decision 2026-09-30 G3: 'Do not inherit unspecified library defaults'; 'If an exact setting is absent from the source specification, report BLOCKED_BY_SPEC rather than guessing a value'). status BLOCKED_BY_SPEC means `values` is null and Config.runtime_contract() raises ConfigSpecGap. When frozen, status becomes FROZEN and `values` must contain every required field. Do NOT fill values from library defaults or memory. (asr_runtime@1 / alignment_runtime@1 / diarization_runtime@1 were FROZEN by the owner on 2026-10-06.)",
+    "asr_runtime@1": {
+      "status": "FROZEN",
+      "source": "owner decision 2026-10-06 (G3 runtime freeze, supersedes the 2026-10-05 proposal)",
+      "required_fields": [
+        "runtime_version",
+        "software",
+        "execution",
+        "model",
+        "transcription",
+        "vad",
+        "runtime_downloads"
+      ],
+      "values": {
+        "runtime_version": "asr_runtime@1",
+        "software": {
+          "whisperx": "3.8.6",
+          "faster_whisper": "1.2.1",
+          "ctranslate2": "4.8.2"
+        },
+        "execution": {
+          "device": "cpu",
+          "compute_type": "int8",
+          "cpu_threads": 8,
+          "batch_size": 1
+        },
+        "model": {
+          "model_id": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+          "resolved_repository": "dropbox-dash/faster-whisper-large-v3-turbo",
+          "model_revision": "0c94664",
+          "model_weights_file": "model.bin",
+          "model_weights_sha256": "e76620f83d5f5b69efd3d87e3dc180c1bd21df9fbebacfd4335e5e1efcc018da"
+        },
+        "transcription": {
+          "task": "transcribe",
+          "language": null,
+          "beam_size": 5,
+          "temperatures": [
+            0.0
+          ],
+          "condition_on_previous_text": false,
+          "patience": 1.0,
+          "length_penalty": 1.0,
+          "compression_ratio_threshold": 2.4,
+          "log_prob_threshold": -1.0,
+          "no_speech_threshold": 0.6,
+          "initial_prompt": null,
+          "hotwords": null
+        },
+        "vad": {
+          "implementation": "vendored_silero_v6",
+          "model_file": "silero_vad_v6.onnx",
+          "model_sha256": "4cbf549b8326f60f80f2536d9eefeb450a9abe83365a098031c89719f1be17d2",
+          "threshold": 0.5,
+          "min_speech_duration_ms": 0,
+          "min_silence_duration_ms": 2000,
+          "speech_pad_ms": 400,
+          "max_speech_duration_s": 30
+        },
+        "runtime_downloads": false
+      },
+      "observed_library_defaults_not_owner_specified": {
+        "_note": "Observed whisperx 3.8.6 default_asr_options NOT listed in the owner's freeze. They are inherited unless the owner pins them explicitly (owner G3 says 'do not inherit unspecified library defaults'); a real-environment test asserts they are unchanged. Not part of the contract hash.",
+        "best_of": 5,
+        "repetition_penalty": 1,
+        "no_repeat_ngram_size": 0,
+        "prompt_reset_on_temperature": 0.5,
+        "prefix": null,
+        "suppress_blank": true,
+        "suppress_tokens": [
+          -1
+        ],
+        "without_timestamps": true,
+        "max_initial_timestamp": 0.0,
+        "word_timestamps": false,
+        "prepend_punctuations": "\"'“¿([{-",
+        "append_punctuations": "\"'.。,，!！?？:：”)]}、",
+        "suppress_numerals": false,
+        "max_new_tokens": null,
+        "clip_timestamps": null,
+        "hallucination_silence_threshold": null
+      }
+    },
+    "alignment_runtime@1": {
+      "status": "FROZEN",
+      "source": "owner decision 2026-10-06 (G3 runtime freeze, supersedes the 2026-10-05 proposal); execution.device from the same message's section 4 (alignment on RX 7800 XT / PyTorch ROCm)",
+      "required_fields": [
+        "runtime_version",
+        "software",
+        "engine",
+        "model",
+        "language",
+        "sample_rate_hz",
+        "interpolation",
+        "execution",
+        "runtime_downloads"
+      ],
+      "values": {
+        "runtime_version": "alignment_runtime@1",
+        "software": {
+          "whisperx": "3.8.6",
+          "transformers": "4.57.6",
+          "torch": "2.8.0"
+        },
+        "engine": {
+          "type": "whisperx_hf_ctc_alignment"
+        },
+        "model": {
+          "model_id": "facebook/wav2vec2-base-960h",
+          "revision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+          "weights_file": "model.safetensors",
+          "weights_sha256": "8aa76ab2243c81747a1f832954586bc566090c83a0ac167df6f31f0fa917d74a"
+        },
+        "language": "en",
+        "sample_rate_hz": 16000,
+        "interpolation": {
+          "method": "ignore"
+        },
+        "execution": {
+          "device": "cuda:0"
+        },
+        "runtime_downloads": false
+      }
+    },
+    "diarization_runtime@1": {
+      "status": "FROZEN",
+      "source": "owner decision 2026-10-06 (G3 runtime freeze, supersedes the 2026-10-05 proposal)",
+      "required_fields": [
+        "runtime_version",
+        "software",
+        "model",
+        "model_files",
+        "execution",
+        "pipeline",
+        "runtime_downloads"
+      ],
+      "values": {
+        "runtime_version": "diarization_runtime@1",
+        "software": {
+          "pyannote_audio": "4.0.7"
+        },
+        "model": {
+          "model_id": "pyannote/speaker-diarization-community-1",
+          "revision": "3533c8cf8e369892e6b79ff1bf80f7b0286a54ee"
+        },
+        "model_files": {
+          "config.yaml": "5ce2bfa9a938dc132cec1172592d65173cbb8f444ea1e4133f10f9391de155be",
+          "segmentation/pytorch_model.bin": "7ad24338d844fb95985486eb1a464e32d229f6d7a03c9abe60f978bacf3f816e",
+          "embedding/pytorch_model.bin": "6f10ff60898a1d185fa22e1d11e0bfa8a92efec811f11bca48cb8cafebefd929",
+          "plda/plda.npz": "9b77bcd840692710dd3496f62ecfeed8d8e5f002fd991b785079b244eab7d255",
+          "plda/xvec_transform.npz": "325f1ce8e48f7e55e9c8aa47e05d2766b7c48c4b25b8de8dd751e7a4cc5fbe8f"
+        },
+        "execution": {
+          "device": "cuda:0",
+          "sample_rate_hz": 16000,
+          "channels": 1
+        },
+        "pipeline": {
+          "min_speakers": null,
+          "max_speakers": null,
+          "num_speakers": null,
+          "exclusive_diarization": false
+        },
+        "runtime_downloads": false
+      }
+    },
+    "embedding_runtime@1": {
+      "status": "FROZEN",
+      "source": "owner decision 2026-10-07 (Phase-4 resolution §2). Supersedes impl plan 1.9 'worker-gpu on RX 7800 XT' for MVP embeddings: CPU fp32 only, no GPU / ONNX / OpenVINO / backend fallback.",
+      "required_fields": [
+        "runtime_version",
+        "model",
+        "backend",
+        "tokenizer",
+        "pooling",
+        "output",
+        "execution",
+        "runtime_downloads"
+      ],
+      "values": {
+        "runtime_version": "embedding_runtime@1",
+        "model": {
+          "model_id": "BAAI/bge-small-en-v1.5",
+          "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+          "model_file": "model.safetensors",
+          "model_sha256": "3c9f31665447c8911517620762200d2245a2518d6e7208acc78cd9db317e21ad"
+        },
+        "backend": {
+          "library": "sentence-transformers",
+          "device": "cpu",
+          "dtype": "float32"
+        },
+        "tokenizer": {
+          "revision": "same_as_model_revision",
+          "max_seq_length": 512,
+          "truncation": true,
+          "padding": false,
+          "add_prefix_space": false,
+          "prompt_prefix": null
+        },
+        "pooling": {
+          "mode": "cls",
+          "dimension": 384
+        },
+        "output": {
+          "normalize": true,
+          "dtype": "float32"
+        },
+        "execution": {
+          "batch_size": 1,
+          "torch_num_threads": 1,
+          "torch_num_interop_threads": 1,
+          "deterministic_algorithms": true
+        },
+        "runtime_downloads": false
+      }
+    },
+    "face_runtime@1": {
+      "status": "BLOCKED_BY_SPEC",
+      "source": "owner decision 2026-10-07 §5 requires MediaPipe legacy Face Detection model_selection=1 (full-range) -- BLOCKED_BY_DEPENDENCY: locked mediapipe 1.0.1 (and 0.10.30) has no mediapipe.solutions and bundles no face model; 0.10.21 has it (face_detection_full_range_sparse.tflite) but pins numpy<2, conflicting with the numpy 2.x lock required by pyannote-audio>=4. Owner must choose.",
+      "required_fields": [
+        "library",
+        "model_selection",
+        "min_detection_confidence",
+        "model_file",
+        "model_sha256"
+      ],
+      "values": null
+    },
+    "frame_resize_runtime@1": {
+      "status": "BLOCKED_BY_SPEC",
+      "source": "owner decision 2026-10-07 §4/§6 ('same deterministic resize algorithm', max dimension 512 px motion / 1280 px screen) -- BLOCKED_BY_SPEC: interpolation algorithm and whether frames smaller than the max dimension are upscaled are not specified",
+      "required_fields": [
+        "interpolation",
+        "upscale_policy"
+      ],
+      "values": null
+    },
+    "rms_db_runtime@1": {
+      "status": "BLOCKED_BY_SPEC",
+      "source": "owner decision 2026-10-07 §7 ('20*log10(max(rms, epsilon))') -- BLOCKED_BY_SPEC: epsilon value is not specified",
+      "required_fields": [
+        "epsilon"
+      ],
+      "values": null
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/tier1_score_v1.schema.json",
+  "title": "tier1_score_v1",
+  "description": "v5.0 2.38.8.",
+  "type": "object",
+  "properties": {
+    "tier1_id": {"type": "string", "format": "uuid"},
+    "source_region_id": {"type": "string", "format": "uuid"},
+    "schema_version": {"const": 1},
+    "stage_version": {"const": "tier1@1"},
+    "config_version": {"type": "string"},
+    "config_sha256": {"type": "string"},
+    "study_mode": {"type": "boolean"},
+    "evaluation_mode": {"type": "boolean"},
+    "effective_max_compression_ratio": {"type": "number"},
+    "weights_version": {"const": "t1_weights@1"},
+    "features": {
+      "type": "object",
+      "properties": {
+        "t1.hook": {"$ref": "#/$defs/vm"}, "t1.boundary": {"$ref": "#/$defs/vm"},
+        "t1.completeness": {"$ref": "#/$defs/vm"}, "t1.standalone": {"$ref": "#/$defs/vm"},
+        "t1.density": {"$ref": "#/$defs/vm"}, "t1.energy": {"$ref": "#/$defs/vm"},
+        "t1.duration_fit": {"$ref": "#/$defs/vm"}, "t1.live_air": {"$ref": "#/$defs/vm"}
+      },
+      "required": ["t1.hook", "t1.boundary", "t1.completeness", "t1.standalone",
+        "t1.density", "t1.energy", "t1.duration_fit", "t1.live_air"],
+      "additionalProperties": false
+    },
+    "region_priority_score": {"type": "number"},
+    "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+    "low_evidence": {"type": "boolean"},
+    "rank": {"type": "integer"},
+    "in_keep_T1": {"type": "boolean"},
+    "queue": {"enum": ["send_to_edit", "backfill", "dropped"]},
+    "drop_reason": {"type": ["string", "null"]}
+  },
+  "required": ["tier1_id", "source_region_id", "schema_version", "stage_version",
+    "config_version", "config_sha256", "study_mode", "evaluation_mode",
+    "effective_max_compression_ratio", "weights_version", "features",
+    "region_priority_score", "coverage", "low_evidence", "rank", "in_keep_T1",
+    "queue", "drop_reason"],
+  "additionalProperties": false,
+  "$defs": {
+    "vm": {
+      "type": "object",
+      "properties": {"v": {"type": ["number", "boolean", "string", "null"]}, "m": {"type": ["string", "null"]}},
+      "required": ["v", "m"],
+      "additionalProperties": false
+    }
+  }
+}

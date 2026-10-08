@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/texttiling_depth_v1.schema.json",
+  "title": "texttiling_depth_v1",
+  "description": "Phase 4 TextTiling depths (owner decision 2026-10-07 s8): the exact v5.0 2.14.1 equations (TextTiling_depth_v1 primitive) over sentence_embeddings_v1; W=5 (semantic) and W=25 (topic). A boundary b lies between sentence b and b+1; an incomplete window pair is null with a missing reason. Body carries identity/provenance that is not circular; artifact_id, checksum, created_at and storage_location live on the Artifact row (impl plan 3.1) exactly as for transcript_v1 -- a checksum inside the bytes it hashes is impossible and created_at would break content addressing. (Flagged for owner confirmation, Phase-4 review.)",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "stage_version": {
+      "const": "texttiling_depth@1"
+    },
+    "config_version": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "job_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "source_video_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "stage": {
+      "const": "ANALYZING",
+      "description": "Phase 4 artifacts are produced inside the ANALYZING stage (v5.0 2.25 as amended 2026-10-04)."
+    },
+    "input_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "minItems": 1
+    },
+    "input_sha256s": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "minItems": 1,
+      "description": "Checksums of the input artifacts, same order as input_artifact_ids."
+    },
+    "input_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "compute_stage_input_sha256 of the input artifact IDs (stage idempotency identity)."
+    },
+    "semantic_window": {
+      "const": 5
+    },
+    "topic_window": {
+      "const": 25
+    },
+    "boundaries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sentence_id_left": {
+            "type": "string",
+            "pattern": "^S[0-9]{6}$"
+          },
+          "sentence_id_right": {
+            "type": "string",
+            "pattern": "^S[0-9]{6}$"
+          },
+          "semantic_gap": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "topic_gap": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "semantic_depth": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "topic_depth": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "semantic_missing_reason": {
+            "enum": [
+              "no_content",
+              "no_evidence",
+              "no_detection",
+              "no_valid_opening",
+              "not_run",
+              "not_applicable",
+              "not_available_in_stage",
+              "extraction_failed",
+              "invalid_output",
+              "unsupported_language",
+              "language_uncertain",
+              "alignment_unavailable",
+              "lead_in_excessive",
+              "no_safe_event_end",
+              "too_short",
+              "too_long",
+              "compression_limit",
+              "fragment_no_speech",
+              "open_ending",
+              "bad_start_edge",
+              "bad_end_edge",
+              "pipeline_incomplete",
+              "reframe_signal_missing",
+              null
+            ],
+            "description": "v5.0 2.16.1 global missing-reason vocabulary; null = value present."
+          },
+          "topic_missing_reason": {
+            "enum": [
+              "no_content",
+              "no_evidence",
+              "no_detection",
+              "no_valid_opening",
+              "not_run",
+              "not_applicable",
+              "not_available_in_stage",
+              "extraction_failed",
+              "invalid_output",
+              "unsupported_language",
+              "language_uncertain",
+              "alignment_unavailable",
+              "lead_in_excessive",
+              "no_safe_event_end",
+              "too_short",
+              "too_long",
+              "compression_limit",
+              "fragment_no_speech",
+              "open_ending",
+              "bad_start_edge",
+              "bad_end_edge",
+              "pipeline_incomplete",
+              "reframe_signal_missing",
+              null
+            ],
+            "description": "v5.0 2.16.1 global missing-reason vocabulary; null = value present."
+          }
+        },
+        "required": [
+          "sentence_id_left",
+          "sentence_id_right",
+          "semantic_gap",
+          "topic_gap",
+          "semantic_depth",
+          "topic_depth",
+          "semantic_missing_reason",
+          "topic_missing_reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "missing_reason": {
+      "enum": [
+        "no_content",
+        "no_evidence",
+        "no_detection",
+        "no_valid_opening",
+        "not_run",
+        "not_applicable",
+        "not_available_in_stage",
+        "extraction_failed",
+        "invalid_output",
+        "unsupported_language",
+        "language_uncertain",
+        "alignment_unavailable",
+        "lead_in_excessive",
+        "no_safe_event_end",
+        "too_short",
+        "too_long",
+        "compression_limit",
+        "fragment_no_speech",
+        "open_ending",
+        "bad_start_edge",
+        "bad_end_edge",
+        "pipeline_incomplete",
+        "reframe_signal_missing",
+        null
+      ],
+      "description": "v5.0 2.16.1 global missing-reason vocabulary; null = value present."
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage_version",
+    "config_version",
+    "config_sha256",
+    "job_id",
+    "source_video_id",
+    "stage",
+    "input_artifact_ids",
+    "input_sha256s",
+    "input_sha256",
+    "semantic_window",
+    "topic_window",
+    "boundaries",
+    "missing_reason"
+  ],
+  "additionalProperties": false
+}

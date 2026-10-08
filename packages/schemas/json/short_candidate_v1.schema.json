@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/short_candidate_v1.schema.json",
+  "title": "short_candidate_v1",
+  "description": "v5.0 2.39.2.",
+  "type": "object",
+  "properties": {
+    "short_candidate_id": {"type": "string", "format": "uuid"},
+    "verified_edit_plan_id": {"type": "string", "format": "uuid"},
+    "source_region_id": {"type": "string", "format": "uuid"},
+    "source_video_id": {"type": "string", "format": "uuid"},
+    "schema_version": {"const": 1},
+    "stage_version": {"const": "short_candidate@1"},
+    "config_version": {"type": "string"},
+    "config_sha256": {"type": "string"},
+    "plan_origin": {"enum": ["model", "user_edit"]},
+    "parent_short_candidate_id": {"type": ["string", "null"], "format": "uuid"},
+    "replaces_short_candidate_id": {"type": ["string", "null"], "format": "uuid"},
+    "export_profile_id": {"type": "string"},
+    "export_profile_sha256": {"type": "string"},
+    "comparability_class": {"enum": ["A", "B"]},
+    "hook_analysis_id": {"type": "string", "format": "uuid"},
+    "content_style_id": {"type": "string", "format": "uuid"},
+    "reframe_plan_id": {"type": "string", "format": "uuid"},
+    "caption_plan_id": {"type": ["string", "null"], "format": "uuid"},
+    "features": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {"v": {}, "m": {"type": ["string", "null"]}},
+        "required": ["v", "m"],
+        "additionalProperties": false
+      }
+    },
+    "eligible": {"type": "boolean"},
+    "exclusion_reason": {"type": ["string", "null"]}
+  },
+  "required": ["short_candidate_id", "verified_edit_plan_id", "source_region_id",
+    "source_video_id", "schema_version", "stage_version", "config_version",
+    "config_sha256", "plan_origin", "parent_short_candidate_id",
+    "replaces_short_candidate_id", "export_profile_id", "export_profile_sha256",
+    "comparability_class", "hook_analysis_id", "content_style_id", "reframe_plan_id",
+    "caption_plan_id", "features", "eligible", "exclusion_reason"],
+  "additionalProperties": false
+}

@@ -1,0 +1,394 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/audio_features_v1.schema.json",
+  "title": "audio_features_v1",
+  "description": "Phase 4 audio analysis (owner decision 2026-10-07 s7). All audio is analysis_audio.wav 16 kHz mono PCM s16le; linear RMS in [0,1] (int16/32768). Dense arrays are indexed: rms_samples[i] covers [i*hop, i*hop+hop) ms-equivalent samples (frame i = samples [i*160, i*160+400)); rms_1s_samples[j] covers second j. No audio stream => arrays empty and missing_reason = not_applicable. Body carries identity/provenance that is not circular; artifact_id, checksum, created_at and storage_location live on the Artifact row (impl plan 3.1) exactly as for transcript_v1 -- a checksum inside the bytes it hashes is impossible and created_at would break content addressing. (Flagged for owner confirmation, Phase-4 review.)",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "stage_version": {
+      "const": "audio_features@1"
+    },
+    "config_version": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "job_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "source_video_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "stage": {
+      "const": "ANALYZING",
+      "description": "Phase 4 artifacts are produced inside the ANALYZING stage (v5.0 2.25 as amended 2026-10-04)."
+    },
+    "input_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "minItems": 1
+    },
+    "input_sha256s": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "minItems": 1,
+      "description": "Checksums of the input artifacts, same order as input_artifact_ids."
+    },
+    "input_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "compute_stage_input_sha256 of the input artifact IDs (stage idempotency identity)."
+    },
+    "sample_rate_hz": {
+      "const": 16000
+    },
+    "rms_frame_length_samples": {
+      "const": 400
+    },
+    "rms_hop_length_samples": {
+      "const": 160
+    },
+    "rms_1s_frame_length_samples": {
+      "const": 16000
+    },
+    "rms_1s_hop_length_samples": {
+      "const": 16000
+    },
+    "rms_samples": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "rms_1s_samples": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "nonspeech_threshold_definition": {
+      "type": "object",
+      "properties": {
+        "helper": {
+          "const": "local_nonspeech_rms_v1"
+        },
+        "window_s": {
+          "const": 60
+        },
+        "percentile": {
+          "const": 20
+        },
+        "frame_s": {
+          "const": 1
+        },
+        "centered": {
+          "const": true
+        },
+        "edge_truncated": {
+          "const": true
+        },
+        "domain": {
+          "const": "linear_rms"
+        },
+        "percentile_method": {
+          "type": "string"
+        },
+        "frame_membership": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "helper",
+        "window_s",
+        "percentile",
+        "frame_s",
+        "centered",
+        "edge_truncated",
+        "domain",
+        "percentile_method",
+        "frame_membership"
+      ],
+      "additionalProperties": false
+    },
+    "silence_intervals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "start_ms",
+          "end_ms",
+          "duration_ms"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "pause_intervals": {
+      "type": "array",
+      "description": "Every inter-word gap between two forced-aligned words (both with usable timing). Consumers filter by duration (PAUSE_MIN_MS 600 for pause score, 500 ms for event-safe edges); fully_nonspeech is the v5.0 'entire interval is nonspeech' test.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "previous_word_id": {
+            "type": "string",
+            "pattern": "^W[0-9]{6}$"
+          },
+          "next_word_id": {
+            "type": "string",
+            "pattern": "^W[0-9]{6}$"
+          },
+          "fully_nonspeech": {
+            "type": "boolean"
+          },
+          "nonspeech_frame_fraction": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "start_ms",
+          "end_ms",
+          "duration_ms",
+          "previous_word_id",
+          "next_word_id",
+          "fully_nonspeech",
+          "nonspeech_frame_fraction"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "audio_peaks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "time_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "rms": {
+            "type": "number"
+          },
+          "rolling_median": {
+            "type": "number"
+          },
+          "rolling_mad": {
+            "type": "number"
+          },
+          "robust_z": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "time_ms",
+          "rms",
+          "rolling_median",
+          "rolling_mad",
+          "robust_z"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "rms_std_db_by_analysis_bin": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "bin_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "frame_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "rms_mean_db": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "rms_std_db": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "m": {
+            "enum": [
+              "no_content",
+              "no_evidence",
+              "no_detection",
+              "no_valid_opening",
+              "not_run",
+              "not_applicable",
+              "not_available_in_stage",
+              "extraction_failed",
+              "invalid_output",
+              "unsupported_language",
+              "language_uncertain",
+              "alignment_unavailable",
+              "lead_in_excessive",
+              "no_safe_event_end",
+              "too_short",
+              "too_long",
+              "compression_limit",
+              "fragment_no_speech",
+              "open_ending",
+              "bad_start_edge",
+              "bad_end_edge",
+              "pipeline_incomplete",
+              "reframe_signal_missing",
+              null
+            ],
+            "description": "v5.0 2.16.1 global missing-reason vocabulary; null = value present."
+          }
+        },
+        "required": [
+          "bin_index",
+          "start_ms",
+          "end_ms",
+          "frame_count",
+          "rms_mean_db",
+          "rms_std_db",
+          "m"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "missing_reason": {
+      "enum": [
+        "no_content",
+        "no_evidence",
+        "no_detection",
+        "no_valid_opening",
+        "not_run",
+        "not_applicable",
+        "not_available_in_stage",
+        "extraction_failed",
+        "invalid_output",
+        "unsupported_language",
+        "language_uncertain",
+        "alignment_unavailable",
+        "lead_in_excessive",
+        "no_safe_event_end",
+        "too_short",
+        "too_long",
+        "compression_limit",
+        "fragment_no_speech",
+        "open_ending",
+        "bad_start_edge",
+        "bad_end_edge",
+        "pipeline_incomplete",
+        "reframe_signal_missing",
+        null
+      ],
+      "description": "v5.0 2.16.1 global missing-reason vocabulary; null = value present."
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "decoder": {
+          "type": "string"
+        },
+        "decoder_version": {
+          "type": "string"
+        },
+        "rms_db_runtime_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "std_ddof": {
+          "type": "integer"
+        },
+        "peak_local_maximum_rule": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "decoder",
+        "decoder_version",
+        "rms_db_runtime_sha256",
+        "std_ddof",
+        "peak_local_maximum_rule"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage_version",
+    "config_version",
+    "config_sha256",
+    "job_id",
+    "source_video_id",
+    "stage",
+    "input_artifact_ids",
+    "input_sha256s",
+    "input_sha256",
+    "sample_rate_hz",
+    "rms_frame_length_samples",
+    "rms_hop_length_samples",
+    "rms_1s_frame_length_samples",
+    "rms_1s_hop_length_samples",
+    "rms_samples",
+    "rms_1s_samples",
+    "nonspeech_threshold_definition",
+    "silence_intervals",
+    "pause_intervals",
+    "audio_peaks",
+    "rms_std_db_by_analysis_bin",
+    "missing_reason",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

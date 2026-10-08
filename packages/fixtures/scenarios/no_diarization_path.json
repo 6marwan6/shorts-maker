@@ -1,0 +1,18 @@
+{
+  "scenario_id": "no_diarization_path",
+  "description": "v5.0 2.14.1 no-diarization fallback. Reuses fixture_speech_45s.mp4 (single real speaker, so diarization would trivially return one speaker anyway) with diarization forced off, to exercise the null/not_available_in_stage contract rather than a diarization-accuracy question.",
+  "media_fixture": "media/fixture_speech_45s.mp4",
+  "input": {
+    "diarization_available": false
+  },
+  "expected": {
+    "speaker_id": null,
+    "speaker_dependent_features": {
+      "v": null,
+      "m": "not_available_in_stage"
+    },
+    "note": "v5.0 2.14.1: 'no zero is substituted'. Non-speaker-dependent features are unaffected and continue normally."
+  },
+  "exercises_helpers": ["speaker_id_v1", "speaker_dependent_feature_v1"],
+  "exercises_module": "shorts_config.analysis_primitives"
+}

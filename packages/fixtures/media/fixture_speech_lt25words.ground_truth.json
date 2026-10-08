@@ -1,0 +1,20 @@
+{
+  "media_fixture": "fixture_speech_lt25words.mp4",
+  "duration_s": 5.08,
+  "video": {
+    "width": 640,
+    "height": 360,
+    "fps": 24,
+    "codec": "h264"
+  },
+  "audio": {
+    "codec": "aac"
+  },
+  "synthetic": true,
+  "synthesis_method": "ffmpeg lavfi flite filter, voice=slt",
+  "speaker_count": 1,
+  "word_count": 16,
+  "satisfies_task_0_9_item": "speech-led < 25 words",
+  "exact_transcript": "Quick question. Have you ever wondered why some short clips do so much better than others?",
+  "relevance": "below JUDGE_MIN_WORDS=25 -- exercises the Layer 2 skip path (LAYER1_ONLY_PASS, class B) once Phase 8 exists."
+}

@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/media_manifest_v1.schema.json",
+  "title": "media_manifest_v1",
+  "description": "Written by the NORMALIZING stage (impl plan 2.2; owner decision 2026-10-02 #12). Records what was probed, what was produced, and how. The original source object is immutable and only referenced here. Artifact ids are deterministic (uuid5 over job, stage input hash and artifact type).",
+  "$defs": {
+    "video_stream": {
+      "type": ["object", "null"],
+      "properties": {
+        "codec": {"type": "string"}, "width": {"type": "integer"}, "height": {"type": "integer"},
+        "pix_fmt": {"type": ["string", "null"]}, "r_frame_rate": {"type": "string"},
+        "avg_frame_rate": {"type": "string"}, "rotation_deg": {"enum": [0, 90, 180, 270]}
+      },
+      "required": ["codec", "width", "height", "pix_fmt", "r_frame_rate", "avg_frame_rate", "rotation_deg"],
+      "additionalProperties": false
+    },
+    "audio_stream": {
+      "type": ["object", "null"],
+      "properties": {"codec": {"type": "string"}, "sample_rate": {"type": "integer"}, "channels": {"type": "integer"}},
+      "required": ["codec", "sample_rate", "channels"], "additionalProperties": false
+    },
+    "probe": {
+      "type": "object",
+      "properties": {
+        "duration_s": {"type": "number"}, "size_bytes": {"type": ["integer", "null"]},
+        "video": {"$ref": "#/$defs/video_stream"}, "audio": {"$ref": "#/$defs/audio_stream"}
+      },
+      "required": ["duration_s", "size_bytes", "video", "audio"], "additionalProperties": false
+    },
+    "object_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {"type": "string", "format": "uuid"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "storage_location": {"type": "string"}
+      },
+      "required": ["artifact_id", "sha256", "storage_location"], "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "schema_version": {"const": 1},
+    "stage_version": {"const": "media_manifest@1"},
+    "config_version": {"type": "string"},
+    "config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_video_id": {"type": "string", "format": "uuid"},
+    "source": {
+      "type": "object",
+      "description": "The immutable original upload.",
+      "properties": {"artifact_id": {"type": "string", "format": "uuid"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+      "required": ["artifact_id", "sha256"], "additionalProperties": false
+    },
+    "probe": {"$ref": "#/$defs/probe"},
+    "audio_presence": {"enum": ["present", "no_audio_stream"]},
+    "orientation": {
+      "type": "object",
+      "properties": {
+        "source_rotation_deg": {"enum": [0, 90, 180, 270]},
+        "rotation_applied_to_pixels": {"type": "boolean"},
+        "display_width": {"type": "integer"}, "display_height": {"type": "integer"}
+      },
+      "required": ["source_rotation_deg", "rotation_applied_to_pixels", "display_width", "display_height"],
+      "additionalProperties": false
+    },
+    "cfr": {
+      "type": "object",
+      "description": "PTS-based decision (owner #13). is_cfr = constant positive PTS delta AND derived fps in {24,25,30,50,60}.",
+      "properties": {
+        "is_cfr": {"type": "boolean"},
+        "reason": {"enum": ["cfr_eligible", "insufficient_frames", "missing_pts", "non_positive_delta", "variable_deltas", "fps_not_eligible"]},
+        "frame_count": {"type": "integer", "minimum": 0},
+        "time_base": {"type": ["string", "null"]},
+        "constant_delta_ticks": {"type": ["integer", "null"]},
+        "derived_fps": {"type": ["string", "null"]},
+        "selected_normalized_fps": {"enum": [24, 25, 30, 50, 60]}
+      },
+      "required": ["is_cfr", "reason", "frame_count", "time_base", "constant_delta_ticks", "derived_fps", "selected_normalized_fps"],
+      "additionalProperties": false
+    },
+    "normalized_video": {
+      "type": "object",
+      "properties": {"object": {"$ref": "#/$defs/object_ref"}, "probe": {"$ref": "#/$defs/probe"}},
+      "required": ["object", "probe"], "additionalProperties": false
+    },
+    "analysis_audio": {
+      "type": "object",
+      "description": "status not_applicable <=> the source has no audio stream (owner G6): no object, no probe.",
+      "properties": {
+        "status": {"enum": ["created", "not_applicable"]},
+        "object": {"oneOf": [{"$ref": "#/$defs/object_ref"}, {"type": "null"}]},
+        "probe": {"oneOf": [{"$ref": "#/$defs/probe"}, {"type": "null"}]}
+      },
+      "required": ["status", "object", "probe"], "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "operation": {"const": "ffprobe+ffmpeg_normalize"},
+        "ffmpeg_version": {"type": "string"},
+        "ffprobe_version": {"type": "string"},
+        "ffmpeg_argv": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}}
+      },
+      "required": ["operation", "ffmpeg_version", "ffprobe_version", "ffmpeg_argv"], "additionalProperties": false
+    }
+  },
+  "required": ["schema_version", "stage_version", "config_version", "config_sha256", "source_video_id", "source",
+               "probe", "audio_presence", "orientation", "cfr", "normalized_video", "analysis_audio", "provenance"],
+  "additionalProperties": false
+}

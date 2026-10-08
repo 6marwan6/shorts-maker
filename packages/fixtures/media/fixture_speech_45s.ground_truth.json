@@ -1,0 +1,24 @@
+{
+  "media_fixture": "fixture_speech_45s.mp4",
+  "duration_s": 46.725,
+  "video": {
+    "width": 640,
+    "height": 360,
+    "fps": 24,
+    "codec": "h264"
+  },
+  "audio": {
+    "codec": "aac",
+    "sample_rate_hz_of_source_synthesis": 16000
+  },
+  "synthetic": true,
+  "synthesis_method": "ffmpeg lavfi flite filter (libflite, offline, no network), voice=kal",
+  "speaker_count": 1,
+  "word_count": 144,
+  "satisfies_task_0_9_item": "speech-led >= 25 words",
+  "exact_transcript": "Here's the thing nobody tells you about building a video editing pipeline. You cannot just cut clips at random points and hope for the best. The first rule is that every cut has to land on a safe boundary, somewhere the audio is quiet enough that a listener never notices the seam. The second rule is that the story has to survive the cut. If you remove the setup but keep the punchline, nobody understands why it's funny. So the system has to understand structure before it understands editing. It has to find where an idea begins and where it truly ends. Only then can it start deciding what to keep and what to throw away. That's the whole philosophy behind this project, and it's why we spent so much time on the boundary detection before writing a single line of the editor itself.",
+  "caveats": [
+    "No word-level timestamps recorded here: flite (via the ffmpeg filter) does not expose per-word timing, and fabricating them would misrepresent what forced_alignment_v1 (Phase 3) actually produces. Real word timestamps come from running the real ASR/alignment pipeline against this file, not from this fixture manifest.",
+    "The visual track is a static solid-color frame with a 'SPEAKER A' label, not a real face -- real face-detection models will not fire on it. Do not use this fixture as a positive face-presence case without regenerating with real footage."
+  ]
+}

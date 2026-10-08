@@ -1,0 +1,25 @@
+{
+  "media_fixture": "fixture_speech_non_english_fr.mp4",
+  "duration_s": 20.643,
+  "video": {
+    "width": 640,
+    "height": 360,
+    "fps": 24,
+    "codec": "h264"
+  },
+  "audio": {
+    "codec": "aac",
+    "sample_rate_hz_of_source_synthesis": 16000
+  },
+  "synthetic": true,
+  "synthesis_method": "espeak-ng (offline) voice=fr, 150 wpm; flite has no non-English voices",
+  "language_code": "fr",
+  "speaker_count": 1,
+  "word_count": 58,
+  "satisfies": "Phase 3 real-model smoke: non-English fixture must FAIL the language gate (owner 2026-10-06 section 6 item 2)",
+  "exact_transcript": "Bonjour à tous et bienvenue dans cette courte présentation. Aujourd'hui, nous allons parler de la manière dont un système peut choisir les meilleurs moments d'une vidéo. La première étape consiste à comprendre la structure de la parole, puis à trouver les endroits où une idée commence et se termine. Ensuite, il faut couper proprement, sans jamais déranger l'auditeur.",
+  "caveats": [
+    "Synthetic eSpeak French, not natural speech: a robotic voice is a weaker language-ID test than real speech. Replace or supplement with a real non-English recording when available.",
+    "Not byte-reproducible; the ground-truth text and language are the contract."
+  ]
+}

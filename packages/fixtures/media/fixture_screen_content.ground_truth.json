@@ -1,0 +1,28 @@
+{
+  "media_fixture": "fixture_screen_content.mp4",
+  "duration_s": 11.265,
+  "video": {
+    "width": 640,
+    "height": 360,
+    "fps": 24,
+    "codec": "h264"
+  },
+  "audio": {
+    "codec": "aac"
+  },
+  "synthetic": true,
+  "synthesis_method": "ffmpeg lavfi color background + drawbox white quadrilateral ('monitor') + drawtext, narrated with flite voice=awb",
+  "speaker_count": 1,
+  "word_count": 34,
+  "satisfies_task_0_9_item": "screen-content reframe",
+  "exact_transcript": "As you can see on the screen right here, the boundary map lists every candidate cut point along with its confidence score, so you can trace exactly why the system chose this particular edit.",
+  "screen_rectangle": {
+    "x": 80,
+    "y": 40,
+    "w": 480,
+    "h": 270,
+    "area_fraction_of_frame": 0.5625,
+    "aspect_ratio": 1.7778,
+    "note": "deliberately inside the screen_content_v1 acceptance bounds from the Phase 4 plan (area fraction in [0.10, 0.95], aspect ratio in [0.60, 2.50]) so this fixture should actually be detected once that Canny/contour detector is implemented in Phase 4 -- not just visually plausible."
+  }
+}

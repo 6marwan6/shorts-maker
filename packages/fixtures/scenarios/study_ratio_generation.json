@@ -1,0 +1,24 @@
+{
+  "scenario_id": "study_ratio_generation",
+  "description": "v5.0 2.36.8.7/2.36.9.9/2.36.9.5: with STUDY_MODE=true, generation additionally produces speech-led study-only plans at deterministic target ratios, on top of the normal production build order. Study plans are never shown to users, never emitted to production ranking, use a separate judge-call budget (STUDY_MAX_JUDGE_CALLS_PER_REGION=10), and only populate Task 3 compression-band evaluation.",
+  "media_fixture": "media/fixture_speech_45s.mp4",
+  "region_ground_truth": {
+    "source_region_duration_s": 46.725,
+    "word_count": 144,
+    "note": "the whole fixture is treated as one Source Region for this scenario; D_clean is computed by d_clean_v1, not asserted here since that helper is still deferred (Phase 3/4)."
+  },
+  "config_override": {
+    "STUDY_MODE": true,
+    "STUDY_MAX_RATIO": 8.0
+  },
+  "expected": {
+    "study_target_ratios_attempted": [4.5, 5.0, 6.0, 7.0, 8.0],
+    "feasibility_rule": "(1 - STUDY_TARGET_TOL) * (source_region_duration_s / r) >= plan_min_s",
+    "intensity": "study_ratio",
+    "counted_against_production_plan_cap": false,
+    "max_plans_per_region_for_study": "STUDY_MAX_PLANS_PER_REGION (5)",
+    "judge_call_budget": "STUDY_MAX_JUDGE_CALLS_PER_REGION (10), separate from the production MAX_JUDGE_CALLS_PER_REGION (6)",
+    "shown_to_users": false,
+    "enters_production_ranking": false
+  }
+}

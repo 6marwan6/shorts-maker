@@ -1,0 +1,577 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/verification_result_v1.schema.json",
+  "title": "verification_result_v1",
+  "description": "v5.0 2.36.9.8. Named 'Verification artifact (schema v1)' in prose with no artifact-type name given; filename/title verification_result_v1 chosen consistent with impl plan's own phrase 'the verification-result artifact (2.36.9.8)' and this file's own id field (verification_id) and stage_version (verifier@2). normalized_issues items are an INFERENCE: the literal top-level example only shows an empty array, but 2.36.9.3's normalization procedure explicitly states 'cut_index values are first resolved to cut_id' and issues are 'deduplicated by (location, cut_id, type)', so the post-normalization item shape is the raw verifier_output@1 issue shape (2.36.9.3) with cut_index replaced by cut_id -- well-grounded but flagged per this repo convention.",
+  "type": "object",
+  "properties": {
+    "verification_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "edit_plan_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "lineage_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "stage_version": {
+      "const": "verifier@2"
+    },
+    "verdict_code_version": {
+      "const": "verdict@1"
+    },
+    "config_version": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string"
+    },
+    "study_mode": {
+      "type": "boolean"
+    },
+    "evaluation_mode": {
+      "type": "boolean"
+    },
+    "effective_max_compression_ratio": {
+      "type": "number"
+    },
+    "layer1": {
+      "type": "object",
+      "properties": {
+        "passed": {
+          "type": "boolean"
+        },
+        "failures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "L1_* codes from 2.36.9.2, e.g. L1_SCHEMA, L1_ORDER, L1_CUT_IN_SPEECH, L1_AUDIO_JOIN, L1_EVENT_BOUNDARY_UNSAFE.",
+          "examples": [
+            "L1_SCHEMA",
+            "L1_ORDER",
+            "L1_CUT_IN_SPEECH",
+            "L1_GLUE",
+            "L1_FORCED",
+            "L1_INTERVALS",
+            "L1_DURATION",
+            "L1_COMPRESSION",
+            "L1_AUDIO_JOIN",
+            "L1_MICRO_EDIT_DENSITY",
+            "L1_EVENT_INTERVALS",
+            "L1_EVENT_ONSET_MISSING",
+            "L1_EVENT_ONSET_CUT",
+            "L1_EVENT_SETTLE_MISSING",
+            "L1_EVENT_MAIN_CUT",
+            "L1_EVENT_SETTLE_TAIL_SHORT",
+            "L1_EVENT_BOUNDARY_UNSAFE"
+          ]
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "e.g. loudness_step_xfade (2.36.9.2), settle_capped (2.36.9.2 L1_EVENT_SETTLE_MISSING check).",
+          "examples": [
+            "loudness_step_xfade",
+            "settle_capped"
+          ]
+        },
+        "audio_joins": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "cut_id": {
+                "type": "string"
+              },
+              "tail_gap_ms": {
+                "type": "integer"
+              },
+              "head_gap_ms": {
+                "type": "integer"
+              },
+              "nonspeech_tail_ms": {
+                "type": "integer"
+              },
+              "nonspeech_head_ms": {
+                "type": "integer"
+              },
+              "normal_crossfade_available": {
+                "type": "boolean"
+              },
+              "extended_crossfade_available": {
+                "type": "boolean"
+              },
+              "speech_overlap_allowed": {
+                "const": false
+              },
+              "loudness_step_db": {
+                "type": "number"
+              },
+              "crossfade_ms": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "applied_crossfade_ms": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "cut_id",
+              "tail_gap_ms",
+              "head_gap_ms",
+              "nonspeech_tail_ms",
+              "nonspeech_head_ms",
+              "normal_crossfade_available",
+              "extended_crossfade_available",
+              "speech_overlap_allowed",
+              "loudness_step_db",
+              "crossfade_ms",
+              "applied_crossfade_ms"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "passed",
+        "failures",
+        "warnings",
+        "audio_joins"
+      ],
+      "additionalProperties": false
+    },
+    "judge_calls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "call_index": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "plan_id_judged": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "prompt_version": {
+            "const": "verifier_prompt@2"
+          },
+          "model_id": {
+            "type": "string"
+          },
+          "temperature": {
+            "const": 0
+          },
+          "judge_validation_version": {
+            "const": "validate_judge_semantics@1"
+          },
+          "normalized_input_sha256": {
+            "type": "string"
+          },
+          "transcript_sha256": {
+            "type": "string"
+          },
+          "normalized_input_ref": {
+            "type": "string"
+          },
+          "cut_map": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "cut_index": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "cut_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "cut_index",
+                "cut_id"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "raw_output": {
+            "type": "object"
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "normalized_issues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "enum": [
+                    "cut",
+                    "opening",
+                    "ending"
+                  ]
+                },
+                "cut_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "type": {
+                  "enum": [
+                    "dangling_reference",
+                    "missing_setup",
+                    "non_sequitur",
+                    "abrupt_end",
+                    "topic_jump",
+                    "opening_dependent",
+                    "other"
+                  ]
+                },
+                "severity": {
+                  "enum": [
+                    "minor",
+                    "major"
+                  ]
+                },
+                "evidence": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "location",
+                "cut_id",
+                "type",
+                "severity",
+                "evidence"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "judged_band": {
+            "enum": [
+              "standard",
+              "strict"
+            ]
+          },
+          "verdict": {
+            "enum": [
+              "PASS",
+              "REPAIRABLE",
+              "HARD_FAIL"
+            ]
+          }
+        },
+        "required": [
+          "call_index",
+          "plan_id_judged",
+          "prompt_version",
+          "model_id",
+          "temperature",
+          "judge_validation_version",
+          "normalized_input_sha256",
+          "transcript_sha256",
+          "normalized_input_ref",
+          "cut_map",
+          "raw_output",
+          "valid",
+          "normalized_issues",
+          "judged_band",
+          "verdict"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "repair": {
+      "type": "object",
+      "properties": {
+        "applied_ops": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "op": {
+                "enum": [
+                  "R1",
+                  "R2"
+                ]
+              },
+              "cut_id": {
+                "type": "string"
+              },
+              "restored_unit_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "bridge": {
+                "type": "object",
+                "description": "2.36.9.6: when restoring r closes the cut completely the bridge test 'passes automatically' without computing the cosine-similarity formulas, so the numeric fields are nullable (not shown nullable in the literal top-level example, but implied by that prose).",
+                "properties": {
+                  "S_cur": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "S_in": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "S_out": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "S_new": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "T_r": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "closed_cut": {
+                    "type": "boolean"
+                  },
+                  "passed": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "S_cur",
+                  "S_in",
+                  "S_out",
+                  "S_new",
+                  "T_r",
+                  "closed_cut",
+                  "passed"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "op",
+              "cut_id",
+              "restored_unit_ids",
+              "bridge"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "stale_targets": {
+          "type": "array",
+          "description": "2.36.9.6: an operation whose cut_id no longer exists is 'skipped and recorded as stale_target'; no literal item shape given.",
+          "items": {
+            "type": "object"
+          }
+        },
+        "repair_insufficient": {
+          "type": "boolean"
+        },
+        "repaired_plan_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        },
+        "result": {
+          "enum": [
+            "judged",
+            "repair_infeasible",
+            "repair_duplicate",
+            "repair_unfunded",
+            null
+          ]
+        }
+      },
+      "required": [
+        "applied_ops",
+        "stale_targets",
+        "repair_insufficient",
+        "repaired_plan_id",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "origin_intensity": {
+      "enum": [
+        "minimal",
+        "balanced",
+        "aggressive",
+        "study_ratio",
+        "user_edit"
+      ]
+    },
+    "origin_band": {
+      "enum": [
+        "standard",
+        "strict"
+      ]
+    },
+    "judged_band": {
+      "enum": [
+        "standard",
+        "strict"
+      ]
+    },
+    "final_status": {
+      "enum": [
+        "TRANSCRIPT_VERIFIED_PASS",
+        "LAYER1_ONLY_PASS",
+        "FAIL"
+      ]
+    },
+    "verification_scope": {
+      "enum": [
+        "speech_judged",
+        "event_layer1_only"
+      ]
+    },
+    "semantic_validation": {
+      "enum": [
+        "passed",
+        "failed",
+        "skipped"
+      ]
+    },
+    "semantic_judge_status": {
+      "enum": [
+        "JUDGED",
+        "SKIPPED_LOW_TRANSCRIPT"
+      ]
+    },
+    "human_validation_required": {
+      "type": "boolean"
+    },
+    "selection_policy": {
+      "const": "verify_all"
+    },
+    "verify_order": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "e.g. minimal, balanced, aggressive, study_ratio:4.5 ... study_ratio:8.0 (2.36.9.5 PLAN_VERIFY_ORDER).",
+      "examples": [
+        "minimal",
+        "balanced",
+        "aggressive",
+        "study_ratio:4.5",
+        "study_ratio:5.0",
+        "study_ratio:6.0",
+        "study_ratio:7.0",
+        "study_ratio:8.0"
+      ]
+    },
+    "verified_edit_plan_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "fail_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "L1_* prefix codes (2.36.9.2) plus fixed literal values from 2.36.9.8.",
+      "examples": [
+        "J_HARD_SCORE",
+        "J_INVALID_OUTPUT",
+        "J_ABRUPT_END",
+        "repair_infeasible",
+        "repair_duplicate",
+        "repair_unfunded",
+        "thresholds_not_met"
+      ]
+    },
+    "tier2_features": {
+      "type": "object",
+      "properties": {
+        "coherence_min": {
+          "type": "number"
+        },
+        "coherence_mean": {
+          "type": "number"
+        },
+        "issue_count_minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "repair_applied": {
+          "type": "boolean"
+        },
+        "judged_band": {
+          "enum": [
+            "standard",
+            "strict"
+          ]
+        },
+        "unjudged": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "coherence_min",
+        "coherence_mean",
+        "issue_count_minor",
+        "repair_applied",
+        "judged_band",
+        "unjudged"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "verification_id",
+    "edit_plan_id",
+    "lineage_id",
+    "schema_version",
+    "stage_version",
+    "verdict_code_version",
+    "config_version",
+    "config_sha256",
+    "study_mode",
+    "evaluation_mode",
+    "effective_max_compression_ratio",
+    "layer1",
+    "judge_calls",
+    "repair",
+    "origin_intensity",
+    "origin_band",
+    "judged_band",
+    "final_status",
+    "verification_scope",
+    "semantic_validation",
+    "semantic_judge_status",
+    "human_validation_required",
+    "selection_policy",
+    "verify_order",
+    "verified_edit_plan_id",
+    "fail_reason",
+    "tier2_features"
+  ],
+  "additionalProperties": false
+}

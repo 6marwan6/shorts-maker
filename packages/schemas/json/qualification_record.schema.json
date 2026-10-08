@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/qualification_record.schema.json",
+  "title": "qualification_record",
+  "description": "v5.0 2.9.4.",
+  "type": "object",
+  "properties": {
+    "region_id": {"type": "string", "format": "uuid"},
+    "schema_version": {"const": 1},
+    "stage_version": {"const": "qualify@1"},
+    "config_version": {"type": "string"},
+    "config_sha256": {"type": "string"},
+    "passed": {"type": "boolean"},
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"enum": ["QC-1", "QC-2", "QC-3", "QC-4", "QC-5", "QC-6"]},
+          "applicable": {"type": "boolean"},
+          "passed": {"type": "boolean"},
+          "value": {"type": ["number", "null"]},
+          "threshold": {"type": ["number", "null"]}
+        },
+        "required": ["id", "applicable", "passed", "value", "threshold"],
+        "additionalProperties": false
+      }
+    },
+    "reject_reasons": {"type": "array", "items": {"type": "string"}},
+    "context_dependency": {"type": "number", "minimum": 0, "maximum": 1},
+    "single_idea": {"type": "boolean"}
+  },
+  "required": ["region_id", "schema_version", "stage_version", "config_version", "config_sha256",
+    "passed", "checks", "reject_reasons", "context_dependency", "single_idea"],
+  "additionalProperties": false
+}

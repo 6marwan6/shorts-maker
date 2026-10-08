@@ -1,0 +1,496 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/transcript_v1.schema.json",
+  "title": "transcript_v1",
+  "description": "Phase 3 output (impl plan Phase 3 3.7; owner decision 2026-09-30 G1). Canonical identity + timing authority for words, sentences, speaker turns. Word/sentence/turn IDs are immutable for the artifact's lifetime (owner G2): W/S/T + six-digit 1-based ordinal, never derived from timestamps or text. Timing is forced-aligned only (v5.0 2.14.1); a word with no reliable alignment keeps its text and has null start/end (owner G4) and is never a cut-safety anchor. Speaker fields are null when diarization was unavailable or failed (owner C1/C4); no zero is substituted. Sentence edges whose boundary word is unaligned are kept but marked timing-unusable (null timing, never synthesized; owner 2026-10-02 #1).",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "stage_version": {
+      "const": "transcript@1"
+    },
+    "config_version": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_video_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "input_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "compute_stage_input_sha256 of the Phase-3 input artifact IDs (stage idempotency identity)."
+    },
+    "language": {
+      "type": "object",
+      "description": "language_gate_v1 result (v5.0 2.14). A failed gate never produces a transcript (job FAILED), so gate_status is only passed | not_applicable.",
+      "properties": {
+        "gate_status": {
+          "enum": [
+            "passed",
+            "not_applicable"
+          ]
+        },
+        "code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "model_id": {
+          "type": "string"
+        },
+        "model_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sample_word_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "gate_status",
+        "code",
+        "confidence",
+        "model_id",
+        "model_sha256",
+        "sample_word_count"
+      ],
+      "additionalProperties": false
+    },
+    "words": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "word_id": {
+            "type": "string",
+            "pattern": "^W[0-9]{6}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "start_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "timing_status": {
+            "enum": [
+              "aligned",
+              "unaligned"
+            ],
+            "description": "unaligned <=> start_ms and end_ms are both null."
+          },
+          "confidence": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "speaker_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^SPK_[0-9]+$"
+          }
+        },
+        "required": [
+          "word_id",
+          "text",
+          "start_ms",
+          "end_ms",
+          "timing_status",
+          "confidence",
+          "speaker_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "sentences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sentence_id": {
+            "type": "string",
+            "pattern": "^S[0-9]{6}$"
+          },
+          "start_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "word_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^W[0-9]{6}$"
+            },
+            "minItems": 1
+          },
+          "speaker_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^SPK_[0-9]+$"
+          },
+          "end_reason": {
+            "enum": [
+              "terminal_punctuation",
+              "gap_speaker_change",
+              "gap_uppercase",
+              "end_of_input",
+              "hard_split_gap",
+              "synthetic_split"
+            ]
+          },
+          "synthetic_boundary": {
+            "type": "boolean"
+          },
+          "start_timing_usable": {
+            "type": "boolean",
+            "description": "true iff the sentence's FIRST word has a real forced-aligned start AND end. false => start_ms is null and this sentence start is NOT a cut-safety anchor (owner 2026-10-02 #1)."
+          },
+          "end_timing_usable": {
+            "type": "boolean",
+            "description": "true iff the sentence's LAST word has a real forced-aligned start AND end. false => end_ms is null and this sentence end is NOT a cut-safety anchor."
+          }
+        },
+        "required": [
+          "sentence_id",
+          "start_ms",
+          "end_ms",
+          "text",
+          "word_ids",
+          "speaker_id",
+          "end_reason",
+          "synthetic_boundary",
+          "start_timing_usable",
+          "end_timing_usable"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "speaker_turns": {
+      "type": "array",
+      "description": "Raw diarization turns, boundaries exactly as returned (owner G5): no minimum duration, no merging; overlapping turns preserved. Sorted by (start_ms, end_ms, raw_label); speaker_id is assigned by first appearance in that order.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "turn_id": {
+            "type": "string",
+            "pattern": "^T[0-9]{6}$"
+          },
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "speaker_id": {
+            "type": "string",
+            "pattern": "^SPK_[0-9]+$"
+          },
+          "raw_label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "turn_id",
+          "start_ms",
+          "end_ms",
+          "speaker_id",
+          "raw_label"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "audio": {
+          "type": "object",
+          "properties": {
+            "availability": {
+              "enum": [
+                "present",
+                "not_applicable"
+              ]
+            }
+          },
+          "required": [
+            "availability"
+          ],
+          "additionalProperties": false
+        },
+        "asr": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "completed",
+                "not_applicable_no_audio"
+              ]
+            },
+            "runtime_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "runtime_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "segment_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "word_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "status",
+            "runtime_id",
+            "runtime_sha256",
+            "segment_count",
+            "word_count"
+          ],
+          "additionalProperties": false
+        },
+        "alignment": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "aligned",
+                "not_applicable"
+              ]
+            },
+            "runtime_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "runtime_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "unaligned_word_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "status",
+            "runtime_id",
+            "runtime_sha256",
+            "unaligned_word_count"
+          ],
+          "additionalProperties": false
+        },
+        "diarization": {
+          "type": "object",
+          "properties": {
+            "attempted": {
+              "type": "boolean"
+            },
+            "status": {
+              "enum": [
+                "succeeded",
+                "unavailable",
+                "failed",
+                "not_applicable_no_speech"
+              ]
+            },
+            "missing_reason": {
+              "enum": [
+                null,
+                "not_available_in_stage",
+                "extraction_failed"
+              ]
+            },
+            "provider": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "model_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "error_category": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "speaker_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "attempted",
+            "status",
+            "missing_reason",
+            "provider",
+            "model_id",
+            "error_category",
+            "speaker_count"
+          ],
+          "additionalProperties": false
+        },
+        "sentence_seg": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "sentence_seg_v1"
+            },
+            "sentence_gap_ms": {
+              "type": "integer"
+            },
+            "sentence_max_s": {
+              "type": "integer"
+            },
+            "hard_split_min_gap_ms": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "version",
+            "sentence_gap_ms",
+            "sentence_max_s",
+            "hard_split_min_gap_ms"
+          ],
+          "additionalProperties": false
+        },
+        "speaker_assignment": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "diarization_v1"
+            }
+          },
+          "required": [
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "model_manifest": {
+          "type": "object",
+          "description": "component -> pinned model identity. Component keys: asr, alignment, vad, language_id, diarization.",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "model_id": {
+                "type": "string"
+              },
+              "revision": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "model_id",
+              "revision",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "audio",
+        "asr",
+        "alignment",
+        "diarization",
+        "sentence_seg",
+        "speaker_assignment",
+        "model_manifest"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage_version",
+    "config_version",
+    "config_sha256",
+    "source_video_id",
+    "input_sha256",
+    "language",
+    "words",
+    "sentences",
+    "speaker_turns",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

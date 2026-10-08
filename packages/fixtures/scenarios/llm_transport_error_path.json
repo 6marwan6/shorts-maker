@@ -1,0 +1,37 @@
+{
+  "scenario_id": "llm_transport_error_path",
+  "description": "impl plan 2.4 / v5.0 2.36.9.3: a transport_error (timeout, connection failure, HTTP 429, HTTP 5xx, provider unavailable) must retry with exponential backoff up to LLM_MAX_TRANSPORT_RETRIES and must NEVER be converted into a semantic verdict or neutral score -- exhausted retries surface a stage-level RETRYABLE_TRANSPORT_ERROR instead.",
+  "variants": [
+    {
+      "component": "semantic_verifier",
+      "model_id": "deepseek-v4-pro",
+      "failure_kind": "timeout",
+      "http_status": null
+    },
+    {
+      "component": "content_style_v1",
+      "model_id": "kimi-k3",
+      "failure_kind": "http_429",
+      "http_status": 429
+    },
+    {
+      "component": "hook_analysis_v1",
+      "model_id": "kimi-k3",
+      "failure_kind": "http_5xx",
+      "http_status": 503
+    },
+    {
+      "component": "semantic_verifier",
+      "model_id": "deepseek-v4-pro",
+      "failure_kind": "provider_unavailable",
+      "http_status": null
+    }
+  ],
+  "expected": {
+    "consumes_lineage_call_budget": false,
+    "max_transport_retries": "LLM_MAX_TRANSPORT_RETRIES",
+    "call_timeout_s": "LLM_CALL_TIMEOUT_S",
+    "on_exhausted_retries": "RETRYABLE_TRANSPORT_ERROR",
+    "must_not_produce": ["a semantic verdict (PASS/REPAIRABLE/HARD_FAIL)", "a neutral/default score", "a fabricated content_style or hook result"]
+  }
+}

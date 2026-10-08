@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/internal/phase3_stage_output_v1.schema.json",
+  "title": "phase3_stage_output_v1",
+  "description": "INTERNAL TRANSPORT ENVELOPE -- NOT a canonical artifact (owner decisions 2026-10-02 #6, 2026-10-04 #6). Lives under json/internal/ so no Python/TypeScript product types are generated for it; it never appears in user-facing artifact lists, canonical lineage, downstream stage contracts or reproducibility references. It carries ASR / forced-alignment / diarization / language-gate results from GPU execution to the orchestrator, which validates it and folds the data into transcript_v1 (the canonical immutable Phase-3 artifact). Coarse ASR segment timing lives here ONLY as alignment input and language-sample windowing -- never a cut-safety anchor (v5.0 2.14.1). Retention: transport_objects registry + maintenance sweep (24 h after materialization / 7 d failed or cancelled).",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "stage_version": {
+      "const": "phase3_stage_output@1"
+    },
+    "config_version": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "stage": {
+      "enum": [
+        "asr",
+        "language_gate",
+        "forced_alignment",
+        "diarization"
+      ]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "not_applicable",
+        "unavailable",
+        "failed"
+      ]
+    },
+    "runtime_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "runtime_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "model_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model_revision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "error_category": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "segments": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "asr only. Coarse ASR segments (alignment input / language windowing only).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_ms",
+          "end_ms",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "words": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "forced_alignment only. Null start/end = unaligned word (owner G4).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "start_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "confidence": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "text",
+          "start_ms",
+          "end_ms",
+          "confidence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "turns": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "diarization only. Raw turns exactly as returned by the provider.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "raw_label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_ms",
+          "end_ms",
+          "raw_label"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "language": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "language_gate only.",
+      "properties": {
+        "gate_status": {
+          "enum": [
+            "passed",
+            "not_applicable"
+          ]
+        },
+        "code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "model_id": {
+          "type": "string"
+        },
+        "model_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sample_word_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "gate_status",
+        "code",
+        "confidence",
+        "model_id",
+        "model_sha256",
+        "sample_word_count"
+      ],
+      "additionalProperties": false
+    },
+    "model_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "models": {
+      "type": "object",
+      "description": "component -> {model_id, revision, sha256}; folded into transcript_v1 provenance.model_manifest.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sha256": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "model_id",
+          "revision",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage_version",
+    "config_version",
+    "config_sha256",
+    "stage",
+    "status",
+    "runtime_id",
+    "runtime_sha256",
+    "model_id",
+    "model_revision",
+    "error_category",
+    "segments",
+    "words",
+    "turns",
+    "language",
+    "model_sha256",
+    "models"
+  ],
+  "additionalProperties": false
+}

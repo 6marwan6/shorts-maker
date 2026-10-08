@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/reframe_plan_v1.schema.json",
+  "title": "reframe_plan_v1",
+  "description": "v5.0 2.39.3. Sole vertical-composition authority.",
+  "type": "object",
+  "properties": {
+    "reframe_plan_id": {"type": "string", "format": "uuid"},
+    "reframe_lineage_id": {"type": "string", "format": "uuid"},
+    "parent_reframe_plan_id": {"type": ["string", "null"], "format": "uuid"},
+    "verified_edit_plan_id": {"type": "string", "format": "uuid"},
+    "content_unchanged": {"type": "boolean"},
+    "schema_version": {"const": 1},
+    "stage_version": {"const": "reframe_plan@1"},
+    "config_version": {"type": "string"},
+    "config_sha256": {"type": "string"},
+    "final_visual_format": {"enum": ["talking_head", "screen_capture", "mixed", "other_visual"]},
+    "strategy": {"enum": ["fixed_center", "face_aware", "multi_speaker", "blurred_background"]},
+    "status": {"enum": ["ok", "degraded", "infeasible"]},
+    "crop_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "reasons": {"type": "array", "items": {"type": "string"}}
+  },
+  "required": ["reframe_plan_id", "reframe_lineage_id", "parent_reframe_plan_id",
+    "verified_edit_plan_id", "content_unchanged", "schema_version", "stage_version",
+    "config_version", "config_sha256", "final_visual_format", "strategy", "status",
+    "crop_confidence", "reasons"],
+  "additionalProperties": false
+}

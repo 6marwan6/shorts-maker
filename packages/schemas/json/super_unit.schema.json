@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/super_unit.schema.json",
+  "title": "super_unit",
+  "description": "v5.0 2.36.8.2 Step 4: 'Each glue group collapses into one super-unit U_i with duration d_i, value v_i = sum v(u) over its members, and a forced flag.' member_unit_ids and the U<n> id scheme are an INFERENCE (not literal spec text) from the edit_plan_v1 example's opening_unit_id: 'U3' / completion_unit_id: 'U27' alongside Step 4's 'n is typically 20-120' -- reasonably well-grounded, but flagged rather than presented as literal. See README Q-07.",
+  "type": "object",
+  "properties": {
+    "super_unit_id": {"type": "string", "pattern": "^U[0-9]+$"},
+    "member_unit_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "duration_ms": {"type": "integer", "minimum": 0},
+    "value": {"type": "number"},
+    "forced": {"type": "boolean"}
+  },
+  "required": ["super_unit_id", "member_unit_ids", "duration_ms", "value", "forced"],
+  "additionalProperties": false
+}

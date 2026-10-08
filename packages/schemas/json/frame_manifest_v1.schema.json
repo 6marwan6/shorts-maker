@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/frame_manifest_v1.schema.json",
+  "title": "frame_manifest_v1",
+  "description": "Phase 4 frame manifest (owner decision 2026-10-07 s8): describes extracted-frame STREAMS; no pixels. source_frame_index = floor(sample_index * source_fps / sampling_fps) (exact rational arithmetic; the latest source frame at or before the sample time); pts_ms = round-half-up(source_frame_index * 1000 / source_fps). shot_detection is metadata only (streamed through PySceneDetect at native fps). Body carries identity/provenance that is not circular; artifact_id, checksum, created_at and storage_location live on the Artifact row (impl plan 3.1) exactly as for transcript_v1 -- a checksum inside the bytes it hashes is impossible and created_at would break content addressing. (Flagged for owner confirmation, Phase-4 review.)",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "stage_version": {
+      "const": "frame_manifest@1"
+    },
+    "config_version": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "job_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "source_video_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "stage": {
+      "const": "ANALYZING",
+      "description": "Phase 4 artifacts are produced inside the ANALYZING stage (v5.0 2.25 as amended 2026-10-04)."
+    },
+    "input_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "minItems": 1
+    },
+    "input_sha256s": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "minItems": 1,
+      "description": "Checksums of the input artifacts, same order as input_artifact_ids."
+    },
+    "input_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "compute_stage_input_sha256 of the input artifact IDs (stage idempotency identity)."
+    },
+    "source_fps": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "source_frame_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "streams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stream_id": {
+            "enum": [
+              "face",
+              "motion",
+              "motion_probe",
+              "screen",
+              "scene_context",
+              "shot_detection"
+            ]
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "sampling_fps": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "null = native normalized fps (shot_detection)."
+          },
+          "source_fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "resize_policy": {
+            "type": "object"
+          },
+          "frame_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "frames": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object",
+              "properties": {
+                "sample_index": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "source_frame_index": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "pts_ms": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "width": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "height": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "sample_index",
+                "source_frame_index",
+                "pts_ms",
+                "width",
+                "height"
+              ],
+              "additionalProperties": false
+            },
+            "description": "null only for shot_detection (metadata-only stream)."
+          }
+        },
+        "required": [
+          "stream_id",
+          "purpose",
+          "sampling_fps",
+          "source_fps",
+          "width",
+          "height",
+          "resize_policy",
+          "frame_count",
+          "frames"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "missing_reason": {
+      "enum": [
+        "no_content",
+        "no_evidence",
+        "no_detection",
+        "no_valid_opening",
+        "not_run",
+        "not_applicable",
+        "not_available_in_stage",
+        "extraction_failed",
+        "invalid_output",
+        "unsupported_language",
+        "language_uncertain",
+        "alignment_unavailable",
+        "lead_in_excessive",
+        "no_safe_event_end",
+        "too_short",
+        "too_long",
+        "compression_limit",
+        "fragment_no_speech",
+        "open_ending",
+        "bad_start_edge",
+        "bad_end_edge",
+        "pipeline_incomplete",
+        "reframe_signal_missing",
+        null
+      ],
+      "description": "v5.0 2.16.1 global missing-reason vocabulary; null = value present."
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage_version",
+    "config_version",
+    "config_sha256",
+    "job_id",
+    "source_video_id",
+    "stage",
+    "input_artifact_ids",
+    "input_sha256s",
+    "input_sha256",
+    "source_fps",
+    "source_frame_count",
+    "duration_ms",
+    "streams",
+    "missing_reason"
+  ],
+  "additionalProperties": false
+}

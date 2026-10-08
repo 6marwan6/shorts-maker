@@ -1,0 +1,472 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/edit_plan_v1.schema.json",
+  "title": "edit_plan_v1",
+  "description": "v5.0 2.36.8.9, literal JSON example plus surrounding prose. Provisional/raw plan artifact produced by edit-plan generation, BEFORE verification. After verification the authoritative artifact is verified_edit_plan_v1 (2.36.9.8a) -- nothing downstream of verification reads this raw form for content/timing (impl plan 3.6). opening_unit_id/completion_unit_id allow null: the literal 2.36.8.9 example shows only \"U3\"/\"U27\" with no null variant, but the parallel verified_edit_plan_v1 example (2.36.9.8a) explicitly types these \"U3 | null\"/\"U27 | null\", and 2.36.8.5 scopes forced-opening/completion selection to speech-led balanced/aggressive plans only -- event-led (single-interval, trim-only, 2.36.8.3) plans have no super-unit opening selection. null is therefore allowed here too, inferred from that parallel rather than stated literally for this exact artifact -- flagged per this repo convention (see super_unit.schema.json).",
+  "type": "object",
+  "properties": {
+    "edit_plan_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "source_region_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "lineage_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "plan_origin": {
+      "enum": [
+        "model",
+        "user_edit"
+      ]
+    },
+    "parent_edit_plan_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "replaces_short_candidate_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "stage_version": {
+      "const": "edit_plan_gen@1"
+    },
+    "config_version": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string"
+    },
+    "study_mode": {
+      "type": "boolean"
+    },
+    "evaluation_mode": {
+      "type": "boolean"
+    },
+    "effective_max_compression_ratio": {
+      "type": "number"
+    },
+    "export_profile_id": {
+      "type": "string"
+    },
+    "export_profile_sha256": {
+      "type": "string"
+    },
+    "content_style_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "intensity": {
+      "enum": [
+        "minimal",
+        "balanced",
+        "aggressive",
+        "study_ratio",
+        "user_edit"
+      ]
+    },
+    "study_target_ratio": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "duration_profile": {
+      "enum": [
+        "primary",
+        "extended"
+      ]
+    },
+    "opening_unit_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "completion_unit_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "retained_intervals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/interval_with_units"
+      }
+    },
+    "deleted_spans": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/interval_with_units"
+      }
+    },
+    "cuts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cut_id": {
+            "type": "string"
+          },
+          "cut_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "before_unit_id": {
+            "type": "string"
+          },
+          "after_unit_id": {
+            "type": "string"
+          },
+          "removed_unit_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "cut_id",
+          "cut_index",
+          "before_unit_id",
+          "after_unit_id",
+          "removed_unit_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "micro_edits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "type is const pause_shorten: 2.36.8.8 scopes MVP micro-edits to pause shortening only.",
+        "properties": {
+          "type": {
+            "const": "pause_shorten"
+          },
+          "start_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end_ms": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "type",
+          "start_ms",
+          "end_ms"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "skipped_micro_edits": {
+      "type": "array",
+      "description": "2.36.8.8 prose: \"recorded in skipped_micro_edits with its reason\" -- no literal item shape given anywhere in v5.0. Left open (not closed) rather than inventing a field list, matching this repo convention for underspecified shapes (see boundary_event.schema.json).",
+      "items": {
+        "type": "object"
+      }
+    },
+    "cleanup": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "pause_shortening_only",
+            "none"
+          ]
+        },
+        "d_clean_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minimal_cleanup_ratio_cap": {
+          "type": "number"
+        },
+        "savings_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "applied_micro_edit_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "mode",
+        "d_clean_ms",
+        "minimal_cleanup_ratio_cap",
+        "savings_ms",
+        "applied_micro_edit_count"
+      ],
+      "additionalProperties": false
+    },
+    "dp_duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "final_duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "source_region_duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "compression_ratio": {
+      "type": "number"
+    },
+    "compression_band": {
+      "enum": [
+        "standard",
+        "strict"
+      ]
+    },
+    "interval_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "objective_value": {
+      "type": "number"
+    },
+    "short_hook": {
+      "type": "object",
+      "properties": {
+        "score": {
+          "type": "number"
+        },
+        "type": {
+          "enum": [
+            "question",
+            "number",
+            "claim",
+            "none"
+          ]
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "score",
+        "type",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "crossfades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "type": {
+            "const": "audio"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "provisional": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "at_ms",
+          "type",
+          "duration_ms",
+          "provisional"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "region_kind": {
+      "enum": [
+        "speech_led",
+        "event_led"
+      ]
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "output_segment_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "source_start_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source_end_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "output_start_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "output_end_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "speed_factor": {
+            "const": 1.0
+          }
+        },
+        "required": [
+          "output_segment_id",
+          "source_start_ms",
+          "source_end_ms",
+          "output_start_ms",
+          "output_end_ms",
+          "speed_factor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "event": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "2.36.8.9: null for speech-led plans; for event-led plans one of two literal shapes (settle_source=detected with settle_ms set and capped_end_ms null, or settle_source=capped with settle_ms null and capped_end_ms set).",
+      "properties": {
+        "onset_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "settle_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "settle_source": {
+          "enum": [
+            "detected",
+            "capped"
+          ]
+        },
+        "capped_end_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "start_is_nearest_safe_before_onset": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "onset_ms",
+        "settle_ms",
+        "settle_source",
+        "capped_end_ms",
+        "start_is_nearest_safe_before_onset"
+      ],
+      "additionalProperties": false
+    },
+    "reframe": {
+      "type": "null",
+      "description": "2.24/2.36.8.9: the raw Edit Plan reframe field always stays null; the reframer writes its own separate reframe_plan_v1 artifact after verification."
+    },
+    "reject_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "edit_plan_id",
+    "source_region_id",
+    "lineage_id",
+    "plan_origin",
+    "parent_edit_plan_id",
+    "replaces_short_candidate_id",
+    "schema_version",
+    "stage_version",
+    "config_version",
+    "config_sha256",
+    "study_mode",
+    "evaluation_mode",
+    "effective_max_compression_ratio",
+    "export_profile_id",
+    "export_profile_sha256",
+    "content_style_id",
+    "intensity",
+    "study_target_ratio",
+    "duration_profile",
+    "opening_unit_id",
+    "completion_unit_id",
+    "retained_intervals",
+    "deleted_spans",
+    "cuts",
+    "micro_edits",
+    "skipped_micro_edits",
+    "cleanup",
+    "dp_duration_ms",
+    "final_duration_ms",
+    "source_region_duration_ms",
+    "compression_ratio",
+    "compression_band",
+    "interval_count",
+    "objective_value",
+    "short_hook",
+    "crossfades",
+    "region_kind",
+    "timeline",
+    "event",
+    "reframe",
+    "reject_reason"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "interval_with_units": {
+      "type": "object",
+      "properties": {
+        "start_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unit_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "start_ms",
+        "end_ms",
+        "unit_ids"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

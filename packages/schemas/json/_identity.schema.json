@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/_identity.schema.json",
+  "title": "ArtifactIdentity",
+  "description": "Fields every behavior-producing artifact must carry (impl plan 0 / v5.0 2.36.0 config-identity invariant).",
+  "type": "object",
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "stage_version": {"type": "string"},
+    "config_version": {"type": "string"},
+    "config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "required": ["schema_version", "stage_version", "config_version", "config_sha256"]
+}

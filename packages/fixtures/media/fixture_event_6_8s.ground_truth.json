@@ -1,0 +1,36 @@
+{
+  "media_fixture": "fixture_event_6_8s.mp4",
+  "duration_s": 7.0,
+  "video": {
+    "width": 640,
+    "height": 360,
+    "fps": 24,
+    "codec": "h264"
+  },
+  "audio": {
+    "codec": "aac"
+  },
+  "synthetic": true,
+  "synthesis_method": "concatenated ffmpeg lavfi segments: pink noise (amplitude 0.01) -> white noise burst (amplitude 0.9) -> pink noise (amplitude 0.01); video: dark color -> white flash -> dark color, exact-matched durations",
+  "speaker_count": 0,
+  "word_count": 0,
+  "satisfies_task_0_9_item": "6-8s event-led candidate",
+  "segments": [
+    {
+      "start_s": 0.0,
+      "end_s": 2.0,
+      "label": "quiet_lead_in"
+    },
+    {
+      "start_s": 2.0,
+      "end_s": 2.3,
+      "label": "onset_burst (loud audio + white flash)"
+    },
+    {
+      "start_s": 2.3,
+      "end_s": 7.0,
+      "label": "settle_quiet"
+    }
+  ],
+  "relevance": "for event_safe_cut_v1 / onset-settle logic (v5.0 2.36.0/2.36.6) once Phase 3/4/5 exist -- onset at t=2.0s, settle begins at t=2.3s."
+}

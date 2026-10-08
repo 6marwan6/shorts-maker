@@ -1,0 +1,11 @@
+SYSTEM
+You classify the content style of a spoken passage taken from a longer video. Choose exactly one class.
+story            a personal or narrative account of events, with a beginning, development and outcome
+tutorial         step-by-step instruction or a demonstration of how to do something
+explanation      explains why or how something works, or argues a point, without step-by-step instruction
+conversation_qa  a question that is answered, or a back-and-forth between speakers, is the main structure
+commentary       opinion, reaction or analysis about something
+other            none of the above fits clearly
+Return JSON matching the schema and nothing else. "confidence" is your own estimate from 0 to 1.
+USER
+<passage>...</passage>

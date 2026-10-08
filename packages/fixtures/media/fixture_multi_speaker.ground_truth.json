@@ -1,0 +1,47 @@
+{
+  "media_fixture": "fixture_multi_speaker.mp4",
+  "duration_s": 19.395,
+  "video": {
+    "width": 640,
+    "height": 360,
+    "fps": 24,
+    "codec": "h264"
+  },
+  "audio": {
+    "codec": "aac"
+  },
+  "synthetic": true,
+  "synthesis_method": "ffmpeg lavfi flite filter, alternating voice=rms (speaker A) / voice=slt (speaker B), 0.6s silence between turns",
+  "speaker_count": 2,
+  "word_count": 45,
+  "satisfies_task_0_9_item": "multi-speaker reframe",
+  "turns": [
+    {
+      "speaker": "A",
+      "start_s": 0.0,
+      "end_s": 3.77,
+      "text": "So here's what I don't get about this whole approach."
+    },
+    {
+      "speaker": "B",
+      "start_s": 4.37,
+      "end_s": 6.6,
+      "text": "Okay, what's the problem with it?"
+    },
+    {
+      "speaker": "A",
+      "start_s": 7.2,
+      "end_s": 13.095,
+      "text": "Why does the system need to understand structure before it can even start editing anything?"
+    },
+    {
+      "speaker": "B",
+      "start_s": 13.695,
+      "end_s": 19.395,
+      "text": "Because a cut that ignores structure destroys the story, even if the audio sounds clean."
+    }
+  ],
+  "caveats": [
+    "Visual turn-taking is simulated with a color/label swap (dark blue 'SPEAKER A' vs dark red 'SPEAKER B'), not two real faces -- useful for audio-diarization and turn-boundary testing, not for real face-detection-based multi_speaker reframe testing (Phase 10) without regenerating with real footage."
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/display_selection_v1.schema.json",
+  "title": "display_selection_v1",
+  "description": "v5.0 2.39.8. Immutable, reproducible display-order decision, separate from score order.",
+  "type": "object",
+  "properties": {
+    "display_selection_id": {"type": "string", "format": "uuid"},
+    "schema_version": {"const": 1},
+    "stage_version": {"const": "display_selection@1"},
+    "config_version": {"type": "string"},
+    "config_sha256": {"type": "string"},
+    "study_mode": {"type": "boolean"},
+    "evaluation_mode": {"type": "boolean"},
+    "job_id": {"type": "string", "format": "uuid"},
+    "revision": {"type": "integer", "minimum": 1},
+    "mmr_lambda": {"type": "number"},
+    "display_max_overlap": {"type": "number"},
+    "selected": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "short_candidate_id": {"type": "string", "format": "uuid"},
+          "comparability_class": {"enum": ["A", "B"]},
+          "score_rank": {"type": "integer"},
+          "display_rank": {"type": "integer"}
+        },
+        "required": ["short_candidate_id", "comparability_class", "score_rank", "display_rank"],
+        "additionalProperties": false
+      }
+    },
+    "slot_allocation": {
+      "type": "object",
+      "properties": {
+        "n_A": {"type": "integer"}, "n_B": {"type": "integer"},
+        "slots_A": {"type": "integer"}, "slots_B": {"type": "integer"}
+      },
+      "required": ["n_A", "n_B", "slots_A", "slots_B"],
+      "additionalProperties": false
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "short_candidate_id": {"type": "string", "format": "uuid"},
+          "reason": {"type": "string"},
+          "overlap_with": {"type": ["string", "null"], "format": "uuid"},
+          "overlap_value": {"type": ["number", "null"]}
+        },
+        "required": ["short_candidate_id", "reason", "overlap_with", "overlap_value"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["display_selection_id", "schema_version", "stage_version", "config_version",
+    "config_sha256", "study_mode", "evaluation_mode", "job_id", "revision", "mmr_lambda",
+    "display_max_overlap", "selected", "slot_allocation", "exclusions"],
+  "additionalProperties": false
+}

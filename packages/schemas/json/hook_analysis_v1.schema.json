@@ -1,0 +1,662 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/hook_analysis_v1.schema.json",
+  "title": "hook_analysis_v1",
+  "description": "v5.0 2.37.8. 'Each {v, m} pair follows 2.37.3; the schema is abbreviated to values for readability' -- every bracketed {} in the literal example is a {v,m} feature pair per 2.37.3's missingness contract. m is left as an open string (not closed to 2.37.3's 6-value table) to match this repo's existing {v,m} precedent (tier1_score_v1.schema.json's local $defs/vm), so a feature's missing_reason vocabulary is not duplicated/drifted across schema files. promise_sentence_index and promise_sentence_index_valid are NOT {v,m} pairs (the literal example shows raw null/boolean), matching 2.37.3's hook_llm_output@1 schema and the promise_established_ms conversion-contract table.",
+  "type": "object",
+  "properties": {
+    "hook_analysis_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "edit_plan_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "stage_version": {
+      "const": "hook_analysis@1"
+    },
+    "config_version": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string"
+    },
+    "language_code": {
+      "type": "string"
+    },
+    "region_kind": {
+      "enum": [
+        "speech_led",
+        "event_led"
+      ]
+    },
+    "verified_edit_plan_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "llm_cache_key": {
+      "type": "string"
+    },
+    "signal_cache_key": {
+      "type": "string"
+    },
+    "timeline_ref": {
+      "type": "string"
+    },
+    "text_window": {
+      "type": "object",
+      "properties": {
+        "sentence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "word_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "over_max_words": {
+          "type": "boolean"
+        },
+        "under_min_words": {
+          "type": "boolean"
+        },
+        "window_truncated_by_plan_end": {
+          "type": "boolean"
+        },
+        "text_sha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "sentence_ids",
+        "word_count",
+        "over_max_words",
+        "under_min_words",
+        "window_truncated_by_plan_end",
+        "text_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "signal_window_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "deterministic": {
+      "type": "object",
+      "properties": {
+        "extractor_version": {
+          "const": "hook_signals@1"
+        },
+        "first_content_ms": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "immediate_content_ratio": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "info_density": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "first_question_ms": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "first_number_ms": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "first_claim_ms": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "cue_question": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "cue_number": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "cue_claim_word": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "first_audio_event_ms": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "first_motion_ms": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "audio_onset_in_window": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "motion_in_window": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "cuts_in_window": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "face_ratio_in_window": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "first_signal_ms": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "extractor_version",
+        "first_content_ms",
+        "immediate_content_ratio",
+        "info_density",
+        "first_question_ms",
+        "first_number_ms",
+        "first_claim_ms",
+        "cue_question",
+        "cue_number",
+        "cue_claim_word",
+        "first_audio_event_ms",
+        "first_motion_ms",
+        "audio_onset_in_window",
+        "motion_in_window",
+        "cuts_in_window",
+        "face_ratio_in_window",
+        "first_signal_ms"
+      ],
+      "additionalProperties": false
+    },
+    "from_verifier": {
+      "type": "object",
+      "properties": {
+        "verification_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "verifier_stage_version": {
+          "const": "verifier@2"
+        },
+        "prompt_version": {
+          "const": "verifier_prompt@2"
+        },
+        "judge_call_index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "opening_standalone_raw": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 5
+        },
+        "context_independence": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "requires_prior_context": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "verification_id",
+        "verifier_stage_version",
+        "prompt_version",
+        "judge_call_index",
+        "opening_standalone_raw",
+        "context_independence",
+        "requires_prior_context"
+      ],
+      "additionalProperties": false
+    },
+    "llm": {
+      "type": "object",
+      "properties": {
+        "prompt_version": {
+          "const": "hook_prompt@1"
+        },
+        "model_id": {
+          "type": "string"
+        },
+        "temperature": {
+          "const": 0
+        },
+        "hook_types": {
+          "type": "object",
+          "description": "v may be an array (hook_types is a list of up to HOOK_MAX_TYPES tags, 2.37.3/2.37.4).",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "primary_hook_type": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "type_confidence": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "curiosity_gap": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "promise_clarity": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "emotional_intensity": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "promise_sentence_index": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "promise_sentence_index_valid": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "promise_established_ms": {
+          "type": "object",
+          "properties": {
+            "v": {},
+            "m": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        "raw_output": {
+          "type": "object"
+        },
+        "valid": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "prompt_version",
+        "model_id",
+        "temperature",
+        "hook_types",
+        "primary_hook_type",
+        "type_confidence",
+        "curiosity_gap",
+        "promise_clarity",
+        "emotional_intensity",
+        "promise_sentence_index",
+        "promise_sentence_index_valid",
+        "promise_established_ms",
+        "raw_output",
+        "valid"
+      ],
+      "additionalProperties": false
+    },
+    "analysis_status": {
+      "enum": [
+        "complete",
+        "partial",
+        "failed",
+        "retryable_transport_error",
+        "not_applicable"
+      ]
+    }
+  },
+  "required": [
+    "hook_analysis_id",
+    "edit_plan_id",
+    "schema_version",
+    "stage_version",
+    "config_version",
+    "config_sha256",
+    "language_code",
+    "region_kind",
+    "verified_edit_plan_id",
+    "llm_cache_key",
+    "signal_cache_key",
+    "timeline_ref",
+    "text_window",
+    "signal_window_ms",
+    "deterministic",
+    "from_verifier",
+    "llm",
+    "analysis_status"
+  ],
+  "additionalProperties": false
+}

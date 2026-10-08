@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/sentence_embeddings_v1.schema.json",
+  "title": "sentence_embeddings_v1",
+  "description": "Phase 4 sentence embeddings (owner decision 2026-10-07 s2, embedding_runtime@1). Embedded text is exactly transcript_v1 sentence.text -- no prefix, speaker label, timestamp, id or context; one sentence = one embedding; a sentence longer than 512 tokens gets ONE truncated embedding (truncated=true). CPU fp32, CLS pooling, L2-normalized, 384 dims. Transcript sentences are never skipped, including sentences with unusable timing (embedding depends on text only). Body carries identity/provenance that is not circular; artifact_id, checksum, created_at and storage_location live on the Artifact row (impl plan 3.1) exactly as for transcript_v1 -- a checksum inside the bytes it hashes is impossible and created_at would break content addressing. (Flagged for owner confirmation, Phase-4 review.)",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "stage_version": {
+      "const": "sentence_embeddings@1"
+    },
+    "config_version": {
+      "type": "string"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "job_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "source_video_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "stage": {
+      "const": "ANALYZING",
+      "description": "Phase 4 artifacts are produced inside the ANALYZING stage (v5.0 2.25 as amended 2026-10-04)."
+    },
+    "input_artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "minItems": 1
+    },
+    "input_sha256s": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "minItems": 1,
+      "description": "Checksums of the input artifacts, same order as input_artifact_ids."
+    },
+    "input_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "compute_stage_input_sha256 of the input artifact IDs (stage idempotency identity)."
+    },
+    "embedding_model_id": {
+      "const": "BAAI/bge-small-en-v1.5"
+    },
+    "model_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "model_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "tokenizer_revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "embedding_dimension": {
+      "const": 384
+    },
+    "dtype": {
+      "const": "float32"
+    },
+    "pooling": {
+      "const": "cls"
+    },
+    "normalized": {
+      "const": true
+    },
+    "max_seq_length": {
+      "const": 512
+    },
+    "backend": {
+      "const": "sentence-transformers"
+    },
+    "batch_size": {
+      "const": 1
+    },
+    "runtime_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "backend_versions": {
+      "type": "object",
+      "description": "Observed library versions at run time (observed, not configured)."
+    },
+    "sentence_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "input_sentence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^S[0-9]{6}$"
+      }
+    },
+    "input_text_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 over the canonical_json list of per-sentence input_text_sha256 values, in sentence order."
+    },
+    "sentences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sentence_id": {
+            "type": "string",
+            "pattern": "^S[0-9]{6}$"
+          },
+          "input_text_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "original_token_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "embedded_token_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "embedding": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 384,
+            "maxItems": 384
+          }
+        },
+        "required": [
+          "sentence_id",
+          "input_text_sha256",
+          "original_token_count",
+          "embedded_token_count",
+          "truncated",
+          "embedding"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "missing_reason": {
+      "enum": [
+        "no_content",
+        "no_evidence",
+        "no_detection",
+        "no_valid_opening",
+        "not_run",
+        "not_applicable",
+        "not_available_in_stage",
+        "extraction_failed",
+        "invalid_output",
+        "unsupported_language",
+        "language_uncertain",
+        "alignment_unavailable",
+        "lead_in_excessive",
+        "no_safe_event_end",
+        "too_short",
+        "too_long",
+        "compression_limit",
+        "fragment_no_speech",
+        "open_ending",
+        "bad_start_edge",
+        "bad_end_edge",
+        "pipeline_incomplete",
+        "reframe_signal_missing",
+        null
+      ],
+      "description": "v5.0 2.16.1 global missing-reason vocabulary; null = value present."
+    }
+  },
+  "required": [
+    "schema_version",
+    "stage_version",
+    "config_version",
+    "config_sha256",
+    "job_id",
+    "source_video_id",
+    "stage",
+    "input_artifact_ids",
+    "input_sha256s",
+    "input_sha256",
+    "embedding_model_id",
+    "model_revision",
+    "model_sha256",
+    "tokenizer_revision",
+    "embedding_dimension",
+    "dtype",
+    "pooling",
+    "normalized",
+    "max_seq_length",
+    "backend",
+    "batch_size",
+    "runtime_sha256",
+    "backend_versions",
+    "sentence_count",
+    "input_sentence_ids",
+    "input_text_sha256",
+    "sentences",
+    "missing_reason"
+  ],
+  "additionalProperties": false
+}

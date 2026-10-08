@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/render_profile_v1.schema.json",
+  "title": "render_profile_v1",
+  "description": "v5.0 2.24. Sole authority for export-format settings. Field-level decision (owner, 2026-09-23): render_profile_v1 keeps profile_version, NOT stage_version -- these are distinct concepts (stage_version = pipeline-stage/producer implementation-contract version; profile_version = export-profile identity/content version), and this artifact is the one exception to the impl-plan-0 blanket stage_version rule because it is not itself a pipeline-stage output in the same sense as the other artifacts -- it is a configuration object the render stage consumes. Faithful to v5.0's literal JSON example, which has no stage_version field.",
+  "type": "object",
+  "properties": {
+    "render_profile_id": {"type": "string", "format": "uuid"},
+    "schema_version": {"const": 1},
+    "profile_version": {"type": "string"},
+    "config_version": {"type": "string"},
+    "config_sha256": {"type": "string"},
+    "platform": {"type": "string"},
+    "aspect_ratio": {"type": "string"},
+    "target_resolution": {
+      "type": "object",
+      "properties": {"width": {"type": "integer"}, "height": {"type": "integer"}},
+      "required": ["width", "height"],
+      "additionalProperties": false
+    },
+    "frame_rate": {"type": "integer"},
+    "video_codec": {"type": "string"},
+    "audio_codec": {"type": "string"},
+    "pixel_format": {"type": "string"},
+    "container": {"type": "string"},
+    "caption_mode": {"enum": ["burned_in", "sidecar", "none"]},
+    "caption_style": {"type": "object"},
+    "loudness_policy": {"const": "source_normalized"}
+  },
+  "required": ["render_profile_id", "schema_version", "profile_version", "config_version",
+    "config_sha256", "platform", "aspect_ratio", "target_resolution", "frame_rate",
+    "video_codec", "audio_codec", "pixel_format", "container", "caption_mode",
+    "caption_style", "loudness_policy"],
+  "additionalProperties": false
+}

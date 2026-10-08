@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shorts-maker/schemas/tier2_score_v1.schema.json",
+  "title": "tier2_score_v1",
+  "description": "v5.0 2.39.11.",
+  "type": "object",
+  "properties": {
+    "tier2_id": {"type": "string", "format": "uuid"},
+    "short_candidate_id": {"type": "string", "format": "uuid"},
+    "schema_version": {"const": 1},
+    "stage_version": {"const": "tier2_heuristic@1"},
+    "config_version": {"type": "string"},
+    "config_sha256": {"type": "string"},
+    "export_profile_id": {"type": "string"},
+    "export_profile_sha256": {"type": "string"},
+    "weights_version": {"const": "t2_weights@1"},
+    "hook_groups_enabled": {"type": "array", "items": {"type": "string"}},
+    "terms": {
+      "type": "object",
+      "properties": {
+        "coherence": {"type": ["number", "null"]}, "hook": {"type": ["number", "null"]},
+        "completeness": {"type": ["number", "null"]}, "density": {"type": ["number", "null"]},
+        "pacing": {"type": ["number", "null"]}, "energy": {"type": ["number", "null"]},
+        "visual": {"type": ["number", "null"]}, "edit": {"type": ["number", "null"]},
+        "reframe": {"type": ["number", "null"]}
+      },
+      "required": ["coherence", "hook", "completeness", "density", "pacing", "energy", "visual", "edit", "reframe"],
+      "additionalProperties": false
+    },
+    "applicable_weight": {"type": "number"},
+    "present_weight": {"type": "number"},
+    "failed_weight": {"type": "number"},
+    "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+    "degraded_features": {"type": "boolean"},
+    "final_rank_score": {"type": "number"},
+    "comparability_class": {"enum": ["A", "B"]},
+    "score_rank": {"type": "integer"},
+    "display_rank": {"type": ["integer", "null"]},
+    "shown": {"type": "boolean"},
+    "alternate_of": {"type": ["string", "null"], "format": "uuid"},
+    "exclusion_reason": {"type": ["string", "null"]}
+  },
+  "required": ["tier2_id", "short_candidate_id", "schema_version", "stage_version",
+    "config_version", "config_sha256", "export_profile_id", "export_profile_sha256",
+    "weights_version", "hook_groups_enabled", "terms", "applicable_weight",
+    "present_weight", "failed_weight", "coverage", "degraded_features",
+    "final_rank_score", "comparability_class", "score_rank", "display_rank",
+    "shown", "alternate_of", "exclusion_reason"],
+  "additionalProperties": false
+}

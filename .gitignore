@@ -1,0 +1,23 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+*.egg-info/
+node_modules/
+.next/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+dist/
+.local-storage*
+
+# local model artifacts (owner 2026-10-06): large files are provisioned, not committed
+models/whisper/
+models/alignment/
+models/diarization/
+models/nltk_data/
+models/fasttext/lid.176.ftz

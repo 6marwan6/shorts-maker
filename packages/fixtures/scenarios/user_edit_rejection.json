@@ -1,0 +1,41 @@
+{
+  "scenario_id": "user_edit_rejection",
+  "description": "impl plan 1.4 candidate-mutation contract + 2.26.1: a user content edit creates a new plan_origin=user_edit lineage, is snapped to safe boundaries, and passes the same Layer 1 / Layer 2 pipeline as a model plan. REPAIRABLE and HARD_FAIL are BOTH terminal for a user edit (2.26.1: 'User edits are never automatically Stage-R repaired'): the candidate enters BLOCKED_USER_EDIT, no repaired descendant is created, and the last accepted plan remains intact -- unlike a model plan, which Stage R would attempt to repair.",
+  "variants": [
+    {
+      "variant_id": "removes_too_much_below_plan_min_s",
+      "request_body": {
+        "operations": [
+          {"type": "remove_retained_interval", "output_segment_id": "seg-0002"},
+          {"type": "remove_retained_interval", "output_segment_id": "seg-0003"},
+          {"type": "trim_end", "requested_source_ms": 4200}
+        ]
+      },
+      "expected_layer1_failure": "L1_DURATION",
+      "expected_terminal_state": "BLOCKED_USER_EDIT",
+      "expected_repair_attempted": false
+    },
+    {
+      "variant_id": "leaves_dangling_reference_at_a_cut",
+      "request_body": {
+        "operations": [
+          {"type": "remove_retained_interval", "output_segment_id": "seg-0004"}
+        ]
+      },
+      "expected_layer2_verdict": "REPAIRABLE",
+      "expected_terminal_state": "BLOCKED_USER_EDIT",
+      "expected_repair_attempted": false,
+      "note": "a model-authored plan with the same issue would go through Stage R; this same verdict is terminal for a user edit."
+    },
+    {
+      "variant_id": "trim_start_snaps_to_nearest_legal_boundary",
+      "request_body": {
+        "operations": [
+          {"type": "trim_start", "requested_source_ms": 1830}
+        ]
+      },
+      "note": "1830ms deliberately does not land on a sentence boundary; the server must snap to the nearest legal sentence-safe boundary (speech-led) rather than inventing a raw timestamp cut. Included as a non-rejection variant for contrast with the two above.",
+      "expected_terminal_state": "not necessarily BLOCKED_USER_EDIT -- depends on whether the snapped result still passes Layer 1/2"
+    }
+  ]
+}

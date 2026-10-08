@@ -1,0 +1,1 @@
+from .shared.celery_app import make_celery_app

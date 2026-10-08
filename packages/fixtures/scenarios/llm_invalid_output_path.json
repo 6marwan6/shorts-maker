@@ -1,0 +1,70 @@
+{
+  "scenario_id": "llm_invalid_output_path",
+  "description": "impl plan 2.4 / v5.0 2.36.9.3-2.36.9.5, 2.37.3 validate_hook_semantics@1, 2.37.5.1: a response was received but fails schema or deterministic cross-field semantic validation. Unlike transport_error, invalid_output DOES consume the lineage call budget and follows the single bounded retry (a second invalid response is terminal for that call).",
+  "variants": [
+    {
+      "component": "semantic_verifier",
+      "validator": "validate_judge_semantics@1",
+      "violated_rule": "(2) any score <= 3 has no issue",
+      "raw_output": {
+        "schema_version": 1,
+        "scores": {"flow": 3, "reference_resolution": 5, "setup_payoff": 5, "ending_completeness": 5, "opening_standalone": 5},
+        "issues": []
+      },
+      "expected_after_first_invalid": "retry once (consumes 2nd call of the lineage budget)",
+      "expected_after_second_invalid": "J_INVALID_OUTPUT"
+    },
+    {
+      "component": "semantic_verifier",
+      "validator": "validate_judge_semantics@1",
+      "violated_rule": "(4) location=opening|ending has non-null cut_index",
+      "raw_output": {
+        "schema_version": 1,
+        "scores": {"flow": 4, "reference_resolution": 4, "setup_payoff": 4, "ending_completeness": 4, "opening_standalone": 2},
+        "issues": [{"location": "opening", "cut_index": 0, "type": "opening_dependent", "severity": "major", "evidence": "refers to a project never introduced in this short"}]
+      }
+    },
+    {
+      "component": "semantic_verifier",
+      "validator": "validate_judge_semantics@1",
+      "violated_rule": "(7) evidence exceeds JUDGE_MAX_EVIDENCE_WORDS",
+      "raw_output": {
+        "schema_version": 1,
+        "scores": {"flow": 2, "reference_resolution": 4, "setup_payoff": 4, "ending_completeness": 4, "opening_standalone": 4},
+        "issues": [{"location": "cut", "cut_index": 0, "type": "non_sequitur", "severity": "major",
+          "evidence": "this evidence string is deliberately far longer than twenty words so that it clearly and unambiguously exceeds the configured JUDGE_MAX_EVIDENCE_WORDS limit for testing"}]
+      }
+    },
+    {
+      "component": "hook_analysis_v1",
+      "validator": "validate_hook_semantics@1",
+      "violated_rule": "promise_sentence_index out of [0, sentence_count-1]",
+      "raw_output": {
+        "schema_version": 1,
+        "hook_types": ["question"],
+        "type_confidence": 0.8,
+        "curiosity_gap": 4,
+        "promise_clarity": 4,
+        "emotional_intensity": 3,
+        "promise_sentence_index": 99
+      }
+    },
+    {
+      "component": "content_style_v1",
+      "validator": "content_style_output@1 schema + confidence range",
+      "violated_rule": "confidence outside [0,1]",
+      "raw_output": {
+        "schema_version": 1,
+        "content_style": "tutorial",
+        "confidence": 1.4,
+        "evidence": "walks through each step in order"
+      },
+      "expected_on_exhausted_retry": "content_style = other, style_status = invalid_output"
+    }
+  ],
+  "expected_common": {
+    "consumes_lineage_call_budget": true,
+    "retry_policy": "single bounded retry",
+    "must_not": "clamp a value or invent an issue to make the output pass"
+  }
+}
